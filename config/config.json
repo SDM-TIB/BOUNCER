@@ -1,0 +1,12 @@
+{
+  "MoleculeTemplates": [
+    {
+       "type": "filepath",
+       "path":"templates/lslod-templates.json"
+     },
+    {
+       "type": "filepath",
+       "path":"templates/bsbm200M-templates.json"
+     }
+  ]
+}

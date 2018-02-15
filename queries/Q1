@@ -1,0 +1,12 @@
+SELECT Distinct * where {
+
+    ?s <http://purl.org/dc/terms/identifier>  ?id .
+    ?s      <http://purl.org/dc/terms/title> ?title .
+    ?s      <http://bio2rdf.org/goa_vocabulary:function> ?funct .
+    ?s      <http://bio2rdf.org/goa_vocabulary:go-annotation> ?goann.
+    ?s <http://bio2rdf.org/bio2rdf_vocabulary:uri> ?uri.
+    ?goann      <http://bio2rdf.org/goa_vocabulary:target> <http://bio2rdf.org/uniprot:O65506>.
+    ?goann    <http://bio2rdf.org/goa_vocabulary:evidence> <http://bio2rdf.org/eco:0000203>.
+    ?goann   <http://bio2rdf.org/goa_vocabulary:go-category> ?category.
+
+}
