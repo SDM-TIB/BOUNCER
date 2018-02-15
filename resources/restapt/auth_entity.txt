@@ -1,0 +1,24 @@
+http://localhost:9999/entity/add
+{
+    "authenticationToken" : "",
+	"type" : "PARTNER",
+	"label" : "description goes here"
+}
+
+
+http://localhost:9999/entity/group
+{
+    "authenticationToken" : "",
+	"group" : "http://www.example.org/access-control-ontology#auth_group_8063d6",
+	"members" : [
+		"http://www.example.org/access-control-ontology#auth_partner_b60372"
+		]
+}
+
+
+http://localhost:9999/entity/dataset
+{
+    "authenticationToken" : "",
+	"dataset" : "dataset1:dataset1",
+	"owner" : "http://www.example.org/access-control-ontology#auth_partner_0df475"
+}
