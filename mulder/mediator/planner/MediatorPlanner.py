@@ -231,8 +231,7 @@ class MediatorPlanner(object):
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
             decided = True
 
-        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(r.left,
-                                                                                                                IndependentOperator) and isinstance(
+        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(r.left, IndependentOperator) and isinstance(
                 l, TreePlan) and not l.operator.__class__.__name__ == "NestedHashJoinFilter":
             if isinstance(l.right, IndependentOperator) and r.left.tree.service.triples[0].subject.name == \
                     l.right.tree.service.triples[0].subject.name:
@@ -244,26 +243,16 @@ class MediatorPlanner(object):
                 n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                 dependent_join = True
                 decided = True
-
-        if not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
+        if not decided and not lowSelectivityLeft and lowSelectivityRight and \
+            (not isinstance(l, TreePlan) or not l.operator.__class__.__name__ == "NestedHashJoinFilter" or not l.operator.__class__.__name__ == "Xunion")\
+            and (not isinstance(r, TreePlan) or not r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter" or not r.operator.__class__.__name__== "Xunion"):
+            n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
+        elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True
         elif lowSelectivityLeft and not lowSelectivityRight and not isinstance(l, TreePlan) and not decided:
             n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
             dependent_join = True
-        elif not decided and not lowSelectivityLeft and lowSelectivityRight and (not isinstance(l,
-                                                                                                TreePlan) or not l.operator.__class__.__name__ == "NestedHashJoinFilter" or not l.operator.__class__.__name__ == "Xunion") and (
-                    not isinstance(r,
-                                   TreePlan) or not r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter" or not r.operator.__class__.__name__ == "Xunion"):
-            # if isinstance(r, TreePlan) and (set(l.vars) & set(r.operator.vars)) != set([]) and (set(l.vars) & set(r.operator.vars)) != set([]):
-            #     n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-            #     dependent_join = True
-            # elif isinstance(l, TreePlan) and (set(r.vars) & set(l.operator.vars)) != set([]) and (set(r.vars) & set(l.operator.vars)) != set([]):
-            #     n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-            #     dependent_join = True
-            # else:
-            n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
-
         elif not decided:
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
 
@@ -629,23 +618,17 @@ def contactSourceAux(referer, server, path, port, query, queue):
     params = urlparse.urlencode({'query': query, 'format': json})
     headers = {"Accept": "*/*", "Referer": referer, "Host": server}
 
-    # Establish connection and get response from server.
-    conn = htclient.HTTPConnection(server)
-    # conn.set_debuglevel(1)
-    if len(path) > 0:
-        conn.request("GET", "/" + path + "?" + params, None, headers)
-    else:
-        conn.request("GET", "?" + params, None, headers)
+    js = "application/sparql-results+json"
+    params = {'query': query, 'format': js}
+    headers = {"User-Agent": "mulder", "Accept": js}
+    import requests
 
-    response = conn.getresponse()
-
-    # print response.status
-    if response.status == HTTPStatus.OK:
-        res = response.read()
-        res = res.replace("false", "False")
+    resp = requests.get(referer, params=params, headers=headers)
+    if resp.status_code == HTTPStatus.OK:
+        res = resp.text.replace("false", "False")
         res = res.replace("true", "True")
-        # print "raw results from endpoint", res
         res = eval(res)
+        reslist = []
 
         if type(res) == dict:
             b = res.get('boolean', None)
@@ -653,17 +636,15 @@ def contactSourceAux(referer, server, path, port, query, queue):
             if 'results' in res:
                 # print "raw results from endpoint", res
                 for x in res['results']['bindings']:
-                    for key, props in x.iteritems():
+                    for key, props in x.items():
                         # Handle typed-literals and language tags
                         suffix = ''
-                        if (props['type'] == 'typed-literal'):
-                            suffix = "^^<" + props['datatype'].encode('unicode_escape').decode(
-                                'unicode_escape').encode("utf-8") + ">"
+                        if props['type'] == 'typed-literal':
+                            suffix = "^^<" + str(props['datatype'].encode('unicode_escape').decode('unicode_escape').encode("utf-8")) + ">"
                         elif ("xml:lang" in props):
                             suffix = '@' + props['xml:lang']
                         try:
-                            x[key] = props['value'].encode('unicode_escape').decode('unicode_escape').encode(
-                                "utf-8") + suffix
+                            x[key] = str(props['value'].encode('unicode_escape').decode('unicode_escape').encode("utf-8")) + suffix
                         except:
                             x[key] = props['value'] + suffix
 
@@ -676,12 +657,12 @@ def contactSourceAux(referer, server, path, port, query, queue):
                     #queue.put(elem)
 
         else:
-            print ("the source " + str(server) + " answered in " + response.getheader(
-                "content-type") + " format, instead of"
+            print ("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
                    + " the JSON format required, then that answer will be ignored")
     # print "b - ", b
     # print server, query, len(reslist)
 
     # print "Contact Source returned: ", len(reslist), ' results'
     return (b, len(reslist))
+
 

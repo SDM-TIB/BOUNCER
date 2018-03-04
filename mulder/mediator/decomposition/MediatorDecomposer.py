@@ -290,7 +290,7 @@ class MediatorDecomposer(object):
     def getSplan(self, s, stars, soln, fl, dependent=False):
         splan = None
         if len(soln['dataset']) == 1:
-            splan = Service(soln['dataset'][0], stars[s])
+            splan = Service('<'+soln['dataset'][0]+'>', stars[s])
             splanfl = self.includeFilter([splan], fl)
             if len(splanfl) > 0:
                 splan.filters.extend(splanfl)
@@ -301,7 +301,7 @@ class MediatorDecomposer(object):
             slist = []
 
             for url in soln['dataset']:
-                su = Service(url, stars[s])
+                su = Service('<'+url+'>', stars[s])
                 fls = self.includeFilter([su], fl)
                 if len(fls) > 0:
                     su.filters.extend(fls)

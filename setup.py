@@ -11,7 +11,7 @@ setup(name='mulder',
       url='https://github.com/Ontario-DataLake/MULDER',
       scripts=['start_experiment.py'],
       packages=find_packages(exclude=['docs']),
-      install_requires=["ply", "flask"],
+      install_requires=["ply", "flask", "networkx"],
       include_package_data=True,
       license='GNU/GPL v2'
      )

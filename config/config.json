@@ -2,11 +2,7 @@
   "MoleculeTemplates": [
     {
        "type": "filepath",
-       "path":"templates/lslod-templates.json"
-     },
-    {
-       "type": "filepath",
-       "path":"templates/bsbm200M-templates.json"
+       "path":"templates/bsbm100M-templates.json"
      }
   ]
 }

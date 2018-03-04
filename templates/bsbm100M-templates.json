@@ -11,7 +11,7 @@
     {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19892/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11892/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":[
         "http://xmlns.com/foaf/0.1/mbox_sha1sum",
         "http://purl.org/dc/elements/1.1/date",
@@ -34,7 +34,7 @@
     {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19893/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11893/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://purl.org/dc/elements/1.1/publisher",
                     "http://www.w3.org/2000/01/rdf-schema#label",
                     "http://www.w3.org/2000/01/rdf-schema#comment",
@@ -75,7 +75,7 @@
     {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric6","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19899/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11899/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://www.w3.org/2000/01/rdf-schema#comment",
                     "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric6",
                     "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric1",
@@ -111,7 +111,7 @@
     {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19898/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11898/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://purl.org/dc/elements/1.1/publisher",
                     "http://www.w3.org/2000/01/rdf-schema#subClassOf",
                     "http://purl.org/dc/elements/1.1/date",
@@ -135,7 +135,7 @@
     {"predicate":"http://purl.org/dc/elements/1.1/date","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19894/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11894/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://xmlns.com/foaf/0.1/homepage",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
         "http://purl.org/dc/elements/1.1/publisher",
@@ -166,7 +166,7 @@
     {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/deliveryDays","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19895/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11895/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/deliveryDays",
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
         "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validTo",
@@ -192,7 +192,7 @@
     {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment","range":[]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19897/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11897/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":[
                   "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
                   "http://purl.org/dc/elements/1.1/publisher",
@@ -224,7 +224,7 @@
     {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewFor","range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product"]}
   ],
   "wrappers":[
-    {"url":"http://0.0.0.0:19896/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+    {"url":"http://0.0.0.0:11896/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
       "predicates":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewFor",
                     "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating3",
                     "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating1",

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 
 from multiprocessing import Process, Queue, active_children
 
@@ -114,7 +114,7 @@ def onSignal2(s, stackframe):
 
 if __name__ == '__main__':
 
-    queryss = open("queries/BSBM/CQ4").read()
+    queryss = open("queries/BSBM/CQ1").read()
     config = ConfigFile("config/config.json")
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     dt = -1
     qname = "Q1"
     time1 = time()
-    user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_1961b5')
+    user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
     server = 'http://localhost:9999/validate/retrieve'
     accesscontrol = AccessControl(server)
 
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     plan = planner.createPlan()
     pt = time() - time1
     print(plan)
-    exit()
+    #exit()
     output = Queue()
     #plan.execute(output)
     print("*+*+*+*+*+*+*+*+*+*+*+*+*+++++")

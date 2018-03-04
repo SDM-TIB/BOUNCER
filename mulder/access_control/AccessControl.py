@@ -9,7 +9,7 @@ from mulder.access_control import PolicyUtility
 
 class AccessControl(object):
 
-    def __init__(self, server):
+    def __init__(self, server='http://localhost:9999/validate/retrieve'):
         self.server = server
         self.accesspolicy = {}
 
@@ -21,8 +21,9 @@ class AccessControl(object):
                             "resource": {"subject": molecule,
                                          "properties": properties}}
 
-        response = request_mock(self.server, req)
-        if not response:
+        response = request_server(self.server, req)
+        print(response)
+        if not response or 'authorizations' not in response:
             return [AccessPolicy("", user=user, dataset=dataset, molecule=molecule, operation=operation, properties_granted=[], properties_denied=properties)]
 
         auth = response["authorizations"]
@@ -31,7 +32,8 @@ class AccessControl(object):
         accesspolicies = []
 
         for ap in props:
-            dataset = ap
+            # dataset = ap
+            dataset = getmappedds(ap)
             properties_granted = props[ap]
             denied = []
             for p in properties:
@@ -94,7 +96,7 @@ class AccessControl(object):
         print("Dependency graph:", depGraphs)
         for g in depGraphs:
             G = PolicyUtility.make_di_graph(g)
-            PolicyUtility.draw_graph(G)
+            # PolicyUtility.draw_graph(G)
             # check if a graph is cyclic or it contains a node with no outgoing edge
             if PolicyUtility.is_cyclic(G) or not PolicyUtility.contains_independent_node(G):
                 continue
@@ -562,6 +564,26 @@ def request_mock(server, request):
 
     return statements[mole]
 
+
+def getmappedds(ap):
+    if "11891" in ap:
+        return "http://0.0.0.0:19892/sparql"
+    elif "11892" in ap:
+        return "http://0.0.0.0:19893/sparql"
+    elif "11893" in ap:
+        return "http://0.0.0.0:19899/sparql"
+    elif "11894" in ap:
+        return "http://0.0.0.0:19898/sparql"
+    elif "11895" in ap:
+        return "http://0.0.0.0:19894/sparql"
+    elif "11896" in ap:
+        return "http://0.0.0.0:19895/sparql"
+    elif "11897" in ap:
+        return "http://0.0.0.0:19897/sparql"
+    elif "11898" in ap:
+        return "http://0.0.0.0:19896/sparql"
+
+    return ap
 
 if __name__=='__main__':
 
