@@ -5,7 +5,7 @@ PREFIX rev: <http://purl.org/stuff/rev#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
-SELECT DISTINCT $CONSTANT$ ?producer ?offer ?vendor ?review
+SELECT DISTINCT ?producer ?offer ?vendor ?review
 WHERE {
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> a  ?productType .
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> rdfs:comment ?productComment .

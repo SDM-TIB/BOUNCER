@@ -17,6 +17,9 @@ from mulder.mediator.decomposition.MediatorDecomposer import MediatorDecomposer
 from mulder.mediator.planner.MediatorPlanner import MediatorPlanner
 from mulder.mediator.planner.MediatorPlanner import contactSource
 
+from mulder.access_control import User, AccessPolicy, Operation
+from mulder.access_control.AccessControl import AccessControl
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.FileHandler('.decompositions.log')
@@ -26,7 +29,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-def runQuery(queryfile, configfile, tempType, isEndpoint, res, qplan, adaptive, withoutCounts, printResults):
+def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, withoutCounts, printResults):
 
     '''if isEndpoint:
         contact = contactSource
@@ -34,9 +37,10 @@ def runQuery(queryfile, configfile, tempType, isEndpoint, res, qplan, adaptive, 
         contact = contactWrapper
     '''
     query = open(queryfile).read()
-    pos = string.rfind(queryfile, "/")
+    pos = queryfile.rfind("/")
     qu = queryfile[pos+1:]
-    pos2 = string.rfind(qu, ".")
+    pos2 = qu.rfind(".")
+    tempType  = 'MULDER'
 
     if pos2 > -1:
         qu = qu[:pos2]
@@ -59,10 +63,17 @@ def runQuery(queryfile, configfile, tempType, isEndpoint, res, qplan, adaptive, 
 
     config = ConfigFile(configfile)
 
-    time1 = time()
-    joinstarslocally = True
+    if user is None:
+        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
+    else:
+        user = User("P5", url=user)
 
-    mdq = MediatorDecomposer(query, config, tempType, joinstarslocally)
+    server = 'http://localhost:9999/validate/retrieve'
+    accesscontrol = AccessControl(server)
+    time1 = time()
+    joinstarslocally = False
+
+    mdq = MediatorDecomposer(query, config, user, accesscontrol, tempType, joinstarslocally)
     new_query = mdq.decompose()
 
     dt = time() - time1
@@ -75,17 +86,10 @@ def runQuery(queryfile, configfile, tempType, isEndpoint, res, qplan, adaptive, 
         printInfo()
         return
 
-    #plan = Plan.createPlan(new_query, adaptive, withoutCounts, buffersize, contact, endpointType)
-    #plan = Plan.createPlan(new_query, adaptive, withoutCounts, buffersize, contact, endpointType)
-    planner = MediatorPlanner(new_query, adaptive, contactSource, endpointType, config)
+    planner = MediatorPlanner(new_query, True, contactSource, None, config)
     plan = planner.createPlan()
-
     logger.info("Plan:")
     logger.info(plan)
-    #print ">>>>>>>>>>>>>>>>Plan>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    #print plan
-    #print "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-    #exit()
     pt = time() - time1
     #print 'creando procesos'
     p2 = Process(target=plan.execute, args=(res,))
@@ -158,7 +162,7 @@ def printInfo():
        tn = time() - time1
     l = (qname + "\t" + str(dt) + "\t" + str(pt) + "\t" + str(t1) + "\t" + str(tn) + "\t" + str(c1) + "\t" + str(cn))
 
-    print (l)
+    print(l)
     logger.info(l)
 
 
@@ -179,7 +183,7 @@ def onSignal2(s, stackframe):
 
 def get_options(argv):
     try:
-        opts, args = getopt.getopt(argv, "h:c:q:t:s:")
+        opts, args = getopt.getopt(argv, "h:c:q:u:s:")
     except getopt.GetoptError:
         usage()
         sys.exit(1)
@@ -188,6 +192,7 @@ def get_options(argv):
     queryfile = None
     #buffersize = 1638400
     tempType = "MULDER"
+    user = None
     isEndpoint = True
     plan = "b"
     adaptive = True
@@ -202,22 +207,22 @@ def get_options(argv):
             configfile = arg
         elif opt == "-q":
             queryfile = arg
-        elif opt == "-t":
-            tempType = arg
+        elif opt == "-u":
+            user = arg
         elif opt == "-s":
             isEndpoint = arg == "True"
 
     if not configfile or not queryfile:
         usage()
         sys.exit(1)
-    return (configfile, queryfile, tempType, isEndpoint, plan, adaptive, withoutCounts, printResults)
+    return (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults)
 
 
 def usage():
-    usage_str = ("Usage: {program} -c <config.json_file>  -q <query_file> -t "
-                 +"<templateType> -s <isEndpoint> " # -o <sparql1.1> -d " +"<decomposition>  -k <special>
-                 +"\n where \n<isEndpoint> "
-                 +" is a boolean value "
+    usage_str = ("Usage: {program} -c <config.json_file>  -q <query_file> -u "
+                 +"<user-url> " # -o <sparql1.1> -d " +"<decomposition>  -k <special>
+                 +"\n where \n"
+                  "<user-url> user url"
                  +"\n")
     print(usage_str.format(program = sys.argv[0]))
 
@@ -225,9 +230,9 @@ def usage():
 def main(argv):
     res = Queue()
     time1 = time()
-    (configfile, queryfile, buffersize, isEndpoint, plan, adaptive, withoutCounts, printResults) = get_options(argv[1:])
+    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults) = get_options(argv[1:])
     try:
-        runQuery(queryfile, configfile, buffersize, isEndpoint, res, plan, adaptive, withoutCounts, printResults)
+        runQuery(queryfile, configfile, user, isEndpoint, res, plan, adaptive, withoutCounts, printResults)
     except Exception as ex:
         print (ex)
 
