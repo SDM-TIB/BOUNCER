@@ -16,5 +16,5 @@ FILTER langMatches( lang(?text), "EN" )
 ?product rdfs:label ?plabel.
 ?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3361> .
 ?reviewer bsbm:country ?country  .
-} limit 100
+}
 

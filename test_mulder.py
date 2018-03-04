@@ -6,7 +6,7 @@ from mulder.molecule.MTManager import ConfigFile
 from mulder.mediator.decomposition.MediatorDecomposer import MediatorDecomposer
 from mulder.mediator.planner.MediatorPlanner import MediatorPlanner
 from mulder.mediator.planner.MediatorPlanner import contactSource as contactsparqlendpoint
-import sys, os, signal
+import sys, os, signal, getopt
 from time import time
 from mulder.access_control import User, AccessPolicy, Operation
 from mulder.access_control.AccessControl import AccessControl
@@ -111,11 +111,55 @@ def onSignal2(s, stackframe):
     printInfo()
     sys.exit(s)
 
+def get_options(argv):
+    try:
+        opts, args = getopt.getopt(argv, "h:c:q:u:s:r:")
+    except getopt.GetoptError:
+        usage()
+        sys.exit(1)
+
+    configfile = None
+    queryfile = None
+    tempType = None
+    isEndpoint = True
+    plan = "b"
+    adaptive = True
+    withoutCounts = False
+    printResults = False
+    result_folder = './'
+    for opt, arg in opts:
+        if opt == "-h":
+            usage()
+            sys.exit()
+        elif opt == "-c":
+            configfile = arg
+        elif opt == "-q":
+            queryfile = arg
+        elif opt == "-u":
+            tempType = arg
+        elif opt == "-s":
+            isEndpoint = arg == "True"
+        elif opt == '-r':
+            result_folder = arg
+
+    if not configfile or not queryfile:
+        usage()
+        sys.exit(1)
+
+    return (configfile, queryfile, tempType, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder)
+
+
+def usage():
+    usage_str = ("Usage: {program} -c <config.json_file>  -q <query>\n")
+    print (usage_str.format(program=sys.argv[0]),)
+
 
 if __name__ == '__main__':
+    (configfile, queryfile, buffersize, isEndpoint, plan, adaptive, withoutCounts, printResults,
+     result_folder) = get_options(sys.argv[1:])
 
-    queryss = open("queries/BSBM/CQ1").read()
-    config = ConfigFile("config/config.json")
+    queryss = open(queryfile).read()
+    config = ConfigFile(configfile)
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
 
@@ -132,9 +176,12 @@ if __name__ == '__main__':
     t1 = -1
     tn = -1
     dt = -1
-    qname = "Q1"
+    qname = queryfile
     time1 = time()
-    user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
+    if tempType is None:
+        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
+    else:
+        user = User("P5", url=tempType)
     server = 'http://localhost:9999/validate/retrieve'
     accesscontrol = AccessControl(server)
 
