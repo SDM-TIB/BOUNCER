@@ -19,4 +19,4 @@ WHERE {
 	?reviewer bsbm:country ?country .
 	FILTER langMatches( lang(?text), "EN" )
 
-}
+}limit 1000

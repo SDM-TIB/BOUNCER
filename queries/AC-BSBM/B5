@@ -23,4 +23,4 @@ WHERE {
 	?vendor rdfs:label ?vendorLabel.
 	?vendor rdfs:comment ?vendorComment.
 	?vendor bsbm:country ?vcountry.
-}
+}limit 1000
