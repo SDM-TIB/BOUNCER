@@ -567,21 +567,21 @@ def request_mock(server, request):
 
 def getmappedds(ap):
     if "11891" in ap:
-        return "http://0.0.0.0:19892/sparql"
+        return "http://0.0.0.0:11892/sparql"
     elif "11892" in ap:
-        return "http://0.0.0.0:19893/sparql"
+        return "http://0.0.0.0:11893/sparql"
     elif "11893" in ap:
-        return "http://0.0.0.0:19899/sparql"
+        return "http://0.0.0.0:11899/sparql"
     elif "11894" in ap:
-        return "http://0.0.0.0:19898/sparql"
+        return "http://0.0.0.0:11898/sparql"
     elif "11895" in ap:
-        return "http://0.0.0.0:19894/sparql"
+        return "http://0.0.0.0:11894/sparql"
     elif "11896" in ap:
-        return "http://0.0.0.0:19895/sparql"
+        return "http://0.0.0.0:11895/sparql"
     elif "11897" in ap:
-        return "http://0.0.0.0:19897/sparql"
+        return "http://0.0.0.0:11897/sparql"
     elif "11898" in ap:
-        return "http://0.0.0.0:19896/sparql"
+        return "http://0.0.0.0:11896/sparql"
 
     return ap
 
