@@ -156,11 +156,11 @@ def usage():
 
 
 if __name__ == '__main__':
-    user = None
-    #(configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
 
-    queryss = open('queries/AC-BSBM/B3').read()
-    config = ConfigFile('config/config.json')
+    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
+
+    queryss = open(queryfile).read()
+    config = ConfigFile(configfile)
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
 
