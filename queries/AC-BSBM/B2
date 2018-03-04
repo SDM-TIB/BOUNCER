@@ -18,8 +18,5 @@ WHERE {
     ?review bsbm:rating3 ?rating3 .
     ?review bsbm:rating4 ?rating4 .
     ?review rev:text ?revText .
-	
+
 }
-	
-	
-	

@@ -22,5 +22,3 @@ WHERE {
 	?reviewer bsbm:country ?country.
 	?reviewer dc:date ?reviewerPublishDate.
 }
-
-	
