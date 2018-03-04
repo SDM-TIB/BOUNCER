@@ -22,7 +22,7 @@ class AccessControl(object):
                                          "properties": properties}}
 
         response = request_server(self.server, req)
-        print(response)
+        # print(response)
         if not response or 'authorizations' not in response:
             return [AccessPolicy("", user=user, dataset=dataset, molecule=molecule, operation=operation, properties_granted=[], properties_denied=properties)]
 
@@ -88,12 +88,12 @@ class AccessControl(object):
         """
         # Sanity check: if projected variables have access grant
         if not self.is_projection_granted(query, stars, policies):
-            print("Projection is not granted")
+            # print("Projection is not granted")
             return []
         depGraphs = PolicyUtility.create_dependency_graph(res, stars, query, policies, queryConnections)
         execGraphs = []
 
-        print("Dependency graph:", depGraphs)
+        # print("Dependency graph:", depGraphs)
         for g in depGraphs:
             G = PolicyUtility.make_di_graph(g)
             # PolicyUtility.draw_graph(G)
@@ -120,9 +120,9 @@ class AccessControl(object):
 
         depGraphs = PolicyUtility.create_dependency_graph(res, stars, query, policies, queryConnections)
         execGraphs = []
-        print("Dependency graph:", depGraphs)
+        # print("Dependency graph:", depGraphs)
         for g in depGraphs:
-            print("g", g)
+            # print("g", g)
             G = PolicyUtility.make_di_graph(g)
             PolicyUtility.draw_graph(G)
             # check if a graph is cyclic or it contains a node with no outgoing edge
@@ -132,10 +132,10 @@ class AccessControl(object):
             # get run sequences of G: if len > 0 then it can be executed
             sequences = self.get_run_sequences(G)
             if len(sequences) > 0:
-                print("Sequences:", sequences)
+                # print("Sequences:", sequences)
                 execGraphs.append(G)
 
-        print("Executable Graphs:", execGraphs)
+        # print("Executable Graphs:", execGraphs)
         if len(execGraphs) > 0:
             return True
 
@@ -151,7 +151,7 @@ class AccessControl(object):
         S = [s for s in outdegree if outdegree[s] == 0]
 
         if len(S) == 0:
-            print("AccessControl.get_run_sequences(): all stars are dependent on each other. Cannot be executed")
+            # print("AccessControl.get_run_sequences(): all stars are dependent on each other. Cannot be executed")
             return {}
 
         inneighbors = PolicyUtility.get_incoming_neighbors(G)
@@ -167,7 +167,7 @@ class AccessControl(object):
         independent = self.get_independents(G, S)
 
         if len(independent) == 0:
-            print("AccessControl.get_run_sequences(): No independent Joins between (independent, dependent) stars")
+            # print("AccessControl.get_run_sequences(): No independent Joins between (independent, dependent) stars")
             return {}
 
         executeable = set()
@@ -253,7 +253,7 @@ class AccessControl(object):
                     executed.add(independent[i])
 
             if not solvable:
-                print("AccessControl.get_run_sequences(): Found unexecutable link. Not permited!")
+                # print("AccessControl.get_run_sequences(): Found unexecutable link. Not permited!")
                 return {}
             # make union between executed (solved) nodes in this iteration to global executable (solved) nodes
             executeable = executeable.union(executed)
@@ -270,7 +270,7 @@ class AccessControl(object):
                 return results
 
             if independent == bucket:
-                print("AccessControl.get_run_sequences(): It is not solvable")
+                # print("AccessControl.get_run_sequences(): It is not solvable")
                 return {}
 
             # reset independent joins to the new joins found in this iteration
@@ -361,7 +361,7 @@ class AccessControl(object):
                 if not solvable:
                     break
         if not solvable:
-            print("cannot be executed! No independent Star (Node)")
+            # print("cannot be executed! No independent Star (Node)")
             return {}
 
         return independents
@@ -567,24 +567,23 @@ def request_mock(server, request):
 
 def getmappedds(ap):
     if "11891" in ap:
-        return "http://0.0.0.0:11892/sparql"
+        return "http://0.0.0.0:19892/sparql"
     elif "11892" in ap:
-        return "http://0.0.0.0:11893/sparql"
+        return "http://0.0.0.0:19893/sparql"
     elif "11893" in ap:
-        return "http://0.0.0.0:11899/sparql"
+        return "http://0.0.0.0:19899/sparql"
     elif "11894" in ap:
-        return "http://0.0.0.0:11898/sparql"
+        return "http://0.0.0.0:19898/sparql"
     elif "11895" in ap:
-        return "http://0.0.0.0:11894/sparql"
+        return "http://0.0.0.0:19894/sparql"
     elif "11896" in ap:
-        return "http://0.0.0.0:11895/sparql"
+        return "http://0.0.0.0:19895/sparql"
     elif "11897" in ap:
-        return "http://0.0.0.0:11897/sparql"
+        return "http://0.0.0.0:19897/sparql"
     elif "11898" in ap:
-        return "http://0.0.0.0:11896/sparql"
+        return "http://0.0.0.0:19896/sparql"
 
     return ap
-
 
 if __name__=='__main__':
 

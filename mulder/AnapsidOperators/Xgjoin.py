@@ -53,7 +53,8 @@ class Xgjoin(Join):
         self.left     = left
         self.right    = right
         self.qresults = out
-
+        left_has_results = False
+        right_has_results = False
         # Initialize tuples.
         tuple1 = None
         tuple2 = None
@@ -63,12 +64,13 @@ class Xgjoin(Join):
 
         # Get the tuples from the queues.
         while tuple1 != "EOF" or tuple2 != "EOF":
-
             # Try to get and process tuple from left queue.
             if tuple1 != "EOF":
                 try:
                     tuple1 = self.left.get(False)
-                    #print "tuple1", tuple1
+                    # print ("tuple1", tuple1)
+                    if tuple1!= 'EOF':
+                        left_has_results = True
                     self.leftcount += 1
                     signal.alarm(self.timeoutSecondStage)
                     self.stage1(tuple1, self.left_table, self.right_table)
@@ -85,12 +87,21 @@ class Xgjoin(Join):
                     self.sourcesBlocked = False
                     pass
 
+            if tuple1 == 'EOF' and not left_has_results:
+                # print("left node has no results. Returning from gjoin")
+                # Turn off alarm to stage 2.
+                signal.alarm(0)
+                # Perform the last probes.
+                self.stage3()
+                return
+
             # Try to get and process tuple from right queue.
             if tuple2 != "EOF":
                 try:
                     tuple2 = self.right.get(False)
-                    #print "tuple2", tuple2
-                    self.rightcount +=1
+                    if tuple2 != 'EOF':
+                        right_has_results = True
+                    self.rightcount += 1
                     signal.alarm(self.timeoutSecondStage)
                     self.stage1(tuple2, self.right_table, self.left_table)
                     self.memory_left += 1
@@ -105,6 +116,14 @@ class Xgjoin(Join):
                     # IOError: when a tuple is received, but the alarm is fired.
                     self.sourcesBlocked = False
                     pass
+
+            if tuple2 == 'EOF' and not right_has_results:
+                # print("right node has no results. Returning from gjoin")
+                # Turn off alarm to stage 2.
+                signal.alarm(0)
+                # Perform the last probes.
+                self.stage3()
+                return
 
             #print "(LEFT, RIGHT) = >", self.leftcount, self.rightcount, self.vars
             if (len(self.left_table) + len(self.right_table) >= self.memorySize):

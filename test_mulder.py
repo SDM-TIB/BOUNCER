@@ -161,7 +161,7 @@ if __name__ == '__main__':
     i = 0
     p2 = Process(target=plan.execute, args=(output,))
     p2.start()
-    p3 = Process(target=conclude, args=(output, p2, False, False))
+    p3 = Process(target=conclude, args=(output, p2, True, False))
     p3.start()
     signal.signal(12, onSignal1)
 

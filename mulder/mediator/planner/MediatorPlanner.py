@@ -182,7 +182,7 @@ class MediatorPlanner(object):
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True
         else:
-            n, dependent_join = self.joinIndependent(l, r)
+            n, dependent_join = self.joinIndependentAnapsid(l, r)
 
         if n and isinstance(n.left, IndependentOperator) and isinstance(n.left.tree, Leaf):
             if (n.left.constantPercentage() <= 0.5) and not (n.left.tree.service.allTriplesGeneral()):
@@ -202,6 +202,68 @@ class MediatorPlanner(object):
                 if ((n.right.constantNumber() + new_constants) / n.right.places() <= 0.5) and not (n.right.tree.service.allTriplesGeneral()):
                     n.right.tree.service.limit = 10000  # Fixed value, this can be learnt in the future
         return n
+
+    def joinIndependentAnapsid(self, l, r):
+        join_variables = l.vars & r.vars
+        all_variables = l.vars | r.vars
+        noInstantiatedLeftStar = False
+        noInstantiatedRightStar = False
+        lowSelectivityLeft = l.allTriplesLowSelectivity()
+        lowSelectivityRight = r.allTriplesLowSelectivity()
+
+        dependent_join = False
+        # if (noInstantiatedRightStar) or ((not wc) and (l.constantPercentage() >= 0.5) and (len(join_variables) > 0) and c):
+        # Case 1: left operator is highly selective and right operator is low selective
+        if not (lowSelectivityLeft) and lowSelectivityRight and not (isinstance(r, TreePlan)):
+            n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+            dependent_join = True
+            # print "Planner CASE 1: nested loop", type(r)
+        # Case 2: left operator is low selective and right operator is highly selective
+        elif lowSelectivityLeft and not (lowSelectivityRight) and not (isinstance(l, TreePlan)):
+            n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+            dependent_join = True
+            # print "Planner CASE 2: nested loop swapping plan", type(r)
+        elif not (lowSelectivityLeft) and lowSelectivityRight and (not (isinstance(l, TreePlan)) or not (
+                l.operator.__class__.__name__ == "NestedHashJoinFilter")) and (
+                not (isinstance(r, TreePlan)) or not (
+                r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter")):
+            if (isinstance(r, TreePlan) and (set(l.vars) & set(r.operator.vars_left) != set([])) and (
+                    set(l.vars) & set(r.operator.vars_right) != set([]))):
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                dependent_join = True
+            elif (isinstance(l, TreePlan) and (set(r.vars) & set(l.operator.vars_left) != set([])) and (
+                    set(r.vars) & set(l.operator.vars_right) != set([]))):
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                dependent_join = True
+            else:
+                n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
+            # print "Planner case 2.5", type(r)
+        # Case 3: both operators are low selective
+
+        else:
+            n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
+            # print "Planner CASE 3: xgjoin"
+
+        if isinstance(n.left, IndependentOperator) and isinstance(n.left.tree, Leaf):
+            if (n.left.constantPercentage() <= 0.5) and not (n.left.tree.service.allTriplesGeneral()):
+                n.left.tree.service.limit = 10000  # Fixed value, this can be learnt in the future
+                # print "modifying limit left ..."
+
+        if isinstance(n.right, IndependentOperator) and isinstance(n.right.tree, Leaf):
+            if not (dependent_join):
+                if (n.right.constantPercentage() <= 0.5) and not (n.right.tree.service.allTriplesGeneral()):
+                    n.right.tree.service.limit = 10000  # Fixed value, this can be learnt in the future
+                    # print "modifying limit right ..."
+            else:
+                new_constants = 0
+                for v in join_variables:
+                    new_constants = new_constants + n.right.query.show().count(v)
+                if ((n.right.constantNumber() + new_constants) / n.right.places() <= 0.5) and not (
+                n.right.tree.service.allTriplesGeneral()):
+                    n.right.tree.service.limit = 10000  # Fixed value, this can be learnt in the future
+                    # print "modifying limit right ..."
+
+        return n, dependent_join
 
     def joinIndependent(self, l, r):
         join_variables = l.vars & r.vars
@@ -226,15 +288,17 @@ class MediatorPlanner(object):
             dependent_join = True
             decided = True
 
-        if isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(l,
-                                                                                                TreePlan) and l.operator.__class__.__name__ == "Xunion":
+        if isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(l, TreePlan) and\
+                l.operator.__class__.__name__ == "Xunion":
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
             decided = True
 
-        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(r.left, IndependentOperator) and isinstance(
-                l, TreePlan) and not l.operator.__class__.__name__ == "NestedHashJoinFilter":
-            if isinstance(l.right, IndependentOperator) and r.left.tree.service.triples[0].subject.name == \
-                    l.right.tree.service.triples[0].subject.name:
+        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and \
+                isinstance(r.left, IndependentOperator) and isinstance(l, TreePlan) and \
+                not l.operator.__class__.__name__ == "NestedHashJoinFilter":
+
+            if isinstance(l.right, IndependentOperator) and \
+                    r.left.tree.service.triples[0].subject.name == l.right.tree.service.triples[0].subject.name:
                 n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                 dependent_join = True
                 decided = True
@@ -244,9 +308,16 @@ class MediatorPlanner(object):
                 dependent_join = True
                 decided = True
         if not decided and not lowSelectivityLeft and lowSelectivityRight and \
-            (not isinstance(l, TreePlan) or not l.operator.__class__.__name__ == "NestedHashJoinFilter" or not l.operator.__class__.__name__ == "Xunion")\
-            and (not isinstance(r, TreePlan) or not r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter" or not r.operator.__class__.__name__== "Xunion"):
+            (not isinstance(l, TreePlan) or
+             not l.operator.__class__.__name__ == "NestedHashJoinFilter" or
+             not l.operator.__class__.__name__ == "Xunion") and \
+            (not isinstance(r, TreePlan) or
+             not r.operator.__class__.__name__ == "Xgjoin" or
+             r.operator.__class__.__name__ == "NestedHashJoinFilter" or
+             not r.operator.__class__.__name__== "Xunion"):
+
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+
         elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True
@@ -593,6 +664,7 @@ def contactSource(molecule, query, queue, config, limit=-1):
             query_copy = query + " LIMIT " + str(limit) + " OFFSET " + str(offset)
             b, cardinality = contactSourceAux(referer, server, path, port, query_copy, queue)
             card += cardinality
+            # print(query_copy, '\n', cardinality)
             if cardinality < limit:
                 break
 
@@ -640,11 +712,17 @@ def contactSourceAux(referer, server, path, port, query, queue):
                         # Handle typed-literals and language tags
                         suffix = ''
                         if props['type'] == 'typed-literal':
-                            suffix = "^^<" + str(props['datatype'].encode('unicode_escape').decode('unicode_escape').encode("utf-8")) + ">"
-                        elif ("xml:lang" in props):
+                            if isinstance(props['datatype'], bytes):
+                                suffix = "^^<" + props['datatype'].decode('utf-8') + ">"
+                            else:
+                                suffix = "^^<" + props['datatype'] + ">"
+                        elif "xml:lang" in props:
                             suffix = '@' + props['xml:lang']
                         try:
-                            x[key] = str(props['value'].encode('unicode_escape').decode('unicode_escape').encode("utf-8")) + suffix
+                            if isinstance(props['value'], bytes):
+                                x[key] = props['value'].decode('utf-8') + suffix
+                            else:
+                                x[key] = props['value'] + suffix
                         except:
                             x[key] = props['value'] + suffix
 

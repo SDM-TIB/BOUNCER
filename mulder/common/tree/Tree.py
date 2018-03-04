@@ -162,6 +162,7 @@ def getDegree(vars0, dict0):
         s = s + dict0[v]
     return s
 
+
 class Leaf(Tree):
     def __init__(self, s, vs, dc, filter=[], join_type='I'):
         self.vars = vs
@@ -235,6 +236,7 @@ class Leaf(Tree):
             projvars = vs
         else:
             projvars = list(set([v.name for v in query.args if not v.constant]))
+
         subvars = list((query.join_vars | set(projvars)) & set(vs))
         vars_order_by = [x for v in query.order_by for x in v.getVars() if x in subvars]
         #print "subvar 1: ", subvars
@@ -258,7 +260,7 @@ class Leaf(Tree):
         else:
             d = ""
         
-        subquery = "SELECT "+d+ subvars + " WHERE {" + subquery + "\n" + query.filter_nested + "\n}"
+        subquery = "SELECT "+ d + subvars + " WHERE {" + subquery + "\n" + query.filter_nested + "\n}"
         return (self.service.endpoint, query.getPrefixes()+subquery, set(variables))
 
     def getCount(self, query, vars, endpointType):

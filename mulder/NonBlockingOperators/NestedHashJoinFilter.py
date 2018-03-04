@@ -145,6 +145,8 @@ class NestedHashJoinFilter(Join):
 
             for r in toRemove:
                 del right_queues[r]
+
+        # print("NestedHashJoinFilter: finished!")
         # Put EOF in queue and exit.
         self.qresults.put("EOF")
         return
@@ -181,7 +183,7 @@ class NestedHashJoinFilter(Join):
                             and_expr = []
                             for var in self.vars:
                                 # aux = "?" + var + "==" + tuple[var]
-                                v = tuple[var]
+                                v = str(tuple[var])
                                 if v.find("http") == 0:  # uris must be passed between < .. >
                                     v = "<" + v + ">"
                                 else:
@@ -204,7 +206,7 @@ class NestedHashJoinFilter(Join):
                             and_expr = []
                             for var in self.vars:
                                 # aux = "?" + var + "==" + tuple[var]
-                                v = tuple[var]
+                                v = str(tuple[var])
                                 if v.find("http") == 0:  # uris must be passed between < .. >
                                     v = "<" + v + ">"
                                 else:
@@ -227,7 +229,7 @@ class NestedHashJoinFilter(Join):
                         and_expr = []
                         for var in self.vars:
                             # aux = "?" + var + "==" + tuple[var]
-                            v = tuple[var]
+                            v = str(tuple[var])
                             if v.find("http") == 0:  # uris must be passed between < .. >
                                 v = "<" + v + ">"
                             else:
@@ -253,7 +255,7 @@ class NestedHashJoinFilter(Join):
                             and_expr = []
                             for var in self.vars:
                                 # aux = "?" + var + "==" + tuple[var]
-                                v = tuple[var]
+                                v = str(tuple[var])
                                 if v.find("http") == 0:  # uris must be passed between < .. >
                                     v = "<" + v + ">"
                                 else:
@@ -276,7 +278,7 @@ class NestedHashJoinFilter(Join):
                             and_expr = []
                             for var in self.vars:
                                 # aux = "?" + var + "==" + tuple[var]
-                                v = tuple[var]
+                                v = str(tuple[var])
                                 if v.find("http") == 0:  # uris must be passed between < .. >
                                     v = "<" + v + ">"
                                 else:
@@ -300,7 +302,7 @@ class NestedHashJoinFilter(Join):
                         and_expr = []
                         for var in self.vars:
                             # aux = "?" + var + "==" + tuple[var]
-                            v = tuple[var]
+                            v = str(tuple[var])
                             if v.find("http") == 0:  # uris must be passed between < .. >
                                 v = "<" + v + ">"
                             else:
@@ -329,7 +331,7 @@ class NestedHashJoinFilter(Join):
                     and_expr = []
                     for var in self.vars:
                         #aux = "?" + var + "==" + tuple[var]
-                        v = tuple[var]
+                        v = str(tuple[var])
                         if v.find("http") == 0: # uris must be passed between < .. >
                             v = "<"+v+">"
                         else:

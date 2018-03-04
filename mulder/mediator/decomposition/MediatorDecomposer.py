@@ -223,7 +223,7 @@ class MediatorDecomposer(object):
         molConn = self.getMTsConnection(selectedmolecules)
         results = []
         res = self.pruneMTs(conn, molConn, selectedmolecules, stars)
-        print("MT-Maching:", res)
+        # print("MT-Maching:", res)
 
         # Access control
         policies = self.accessControl.get_access_policies(res, stars, self.query, self.user)
@@ -244,12 +244,12 @@ class MediatorDecomposer(object):
         #     return qpl1
 
     def decompose_sequences(self, acres, stars, fl):
-        print("Runnable Sequences:", acres)
+        # print("Runnable Sequences:", acres)
         plans = []
         for soln in acres:
             for e in soln:
-                print(e)
-                print(soln[e])
+                # print(e)
+                # print(soln[e])
                 plan = self.make_plan(e, stars, soln[e], fl)
                 plans.append(plan)
 
