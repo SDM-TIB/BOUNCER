@@ -1,0 +1,23 @@
+PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rev: <http://purl.org/stuff/rev#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+
+SELECT DISTINCT ?product ?productType ?review ?reviewer
+WHERE {
+	?product a  ?productType .
+	?product rdfs:label ?productLabel .
+	?product rdfs:comment ?productComment .
+	?product dc:publisher ?publisher .
+	?productType rdfs:comment ?productTypeComment .
+	?review bsbm:reviewFor ?product .
+	?review dc:title ?revTitle .
+	?offer bsbm:product ?product .
+	?offer bsbm:vendor ?vendor .
+	?offer dc:publisher ?vendor .
+	?vendor rdfs:comment ?vendorComment.
+	?vendor bsbm:country ?vcountry.
+}

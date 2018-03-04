@@ -1,0 +1,18 @@
+PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+
+SELECT DISTINCT ?offer ?price
+WHERE {
+	?product rdfs:label ?productLabel .
+	?offer bsbm:product ?product .
+	?offer bsbm:vendor ?vendor .
+	?offer dc:publisher ?vendor 
+	?offer bsbm:deliveryDays ?deliveryDays .
+	?offer bsbm:price ?price .
+	?offer bsbm:validTo ?date .
+	FILTER (?deliveryDays <= 3) .
+}

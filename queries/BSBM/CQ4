@@ -6,29 +6,27 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
-SELECT DISTINCT ?label ?productType ?productFeature ?producer ?review ?reviewer WHERE {
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> a  ?productType .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:label ?label .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productFeature ?productFeature .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:comment ?productComment .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:producer ?producer .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> dc:publisher ?publisher .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual1 ?propertyTextual1 .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual2 ?propertyTextual2 .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual3 ?propertyTextual3 .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyNumeric1 ?propertyNumeric1 .
-<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyNumeric2 ?propertyNumeric2 .
-
-?productFeature rdfs:label ?productFeatureLabel .
-?productFeature rdfs:comment ?productFeatureComment.
-?productFeature dc:publisher ?productFeaturePublisher.
-
-?review bsbm:reviewFor <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> .
-?review rev:reviewer ?reviewer .
-?review dc:title ?revTitle .
-
-?reviewer foaf:name ?revName .
-?reviewer bsbm:country ?country.
-?reviewer dc:publisher ?reviewerPublisher.
-?reviewer dc:date ?reviewerPublishDate.
+SELECT DISTINCT ?label ?productType ?productFeature ?producer ?review ?reviewer
+WHERE {
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> a  ?productType .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:label ?label .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productFeature ?productFeature .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:comment ?productComment .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:producer ?producer .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> dc:publisher ?publisher .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual1 ?propertyTextual1 .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual2 ?propertyTextual2 .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyTextual3 ?propertyTextual3 .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyNumeric1 ?propertyNumeric1 .
+    <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:productPropertyNumeric2 ?propertyNumeric2 .
+    ?productFeature rdfs:label ?productFeatureLabel .
+    ?productFeature rdfs:comment ?productFeatureComment.
+    ?productFeature dc:publisher ?productFeaturePublisher.
+    ?review bsbm:reviewFor <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> .
+    ?review rev:reviewer ?reviewer .
+    ?review dc:title ?revTitle .
+    ?reviewer foaf:name ?revName .
+    ?reviewer bsbm:country ?country.
+    ?reviewer dc:publisher ?reviewerPublisher.
+    ?reviewer dc:date ?reviewerPublishDate.
 }

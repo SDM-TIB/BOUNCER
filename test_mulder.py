@@ -120,7 +120,8 @@ def get_options(argv):
 
     configfile = None
     queryfile = None
-    tempType = None
+    tempType = 'MULDER'
+    user = None
     isEndpoint = True
     plan = "b"
     adaptive = True
@@ -136,7 +137,7 @@ def get_options(argv):
         elif opt == "-q":
             queryfile = arg
         elif opt == "-u":
-            tempType = arg
+            user = arg
         elif opt == "-s":
             isEndpoint = arg == "True"
         elif opt == '-r':
@@ -146,7 +147,7 @@ def get_options(argv):
         usage()
         sys.exit(1)
 
-    return (configfile, queryfile, tempType, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder)
+    return (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder)
 
 
 def usage():
@@ -155,8 +156,8 @@ def usage():
 
 
 if __name__ == '__main__':
-    (configfile, queryfile, buffersize, isEndpoint, plan, adaptive, withoutCounts, printResults,
-     result_folder) = get_options(sys.argv[1:])
+
+    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
 
     queryss = open(queryfile).read()
     config = ConfigFile(configfile)
@@ -176,12 +177,13 @@ if __name__ == '__main__':
     t1 = -1
     tn = -1
     dt = -1
-    qname = queryfile
+    qname = 'Q1'
     time1 = time()
-    if tempType is None:
+    if user is None:
         user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
     else:
         user = User("P5", url=tempType)
+
     server = 'http://localhost:9999/validate/retrieve'
     accesscontrol = AccessControl(server)
 

@@ -1,0 +1,26 @@
+PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rev: <http://purl.org/stuff/rev#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+
+SELECT DISTINCT ?product ?producer ?offer ?vendor
+WHERE {
+	?product a  ?productType .
+	?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3482> .
+	?product rdfs:comment ?productComment .
+	?product bsbm:producer ?producer .
+	?product dc:publisher ?publisher .
+	?product bsbm:productPropertyTextual1 ?propertyTextual1 .
+	?product bsbm:productPropertyTextual2 ?propertyTextual2 .
+	?product bsbm:productPropertyTextual3 ?propertyTextual3 .
+	?product bsbm:productPropertyNumeric1 ?propertyNumeric1 .
+	?product bsbm:productPropertyNumeric2 ?propertyNumeric2 .
+	?productType rdfs:comment ?productTypeComment .
+	?producer rdfs:comment ?producerComment.
+	?producer dc:publisher ?producerPublisher.
+	?vendor rdfs:label ?vendorLabel.
+	?vendor rdfs:comment ?vendorComment.
+	?vendor bsbm:country ?vcountry.
+}
