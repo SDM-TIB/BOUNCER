@@ -304,6 +304,7 @@ class MediatorDecomposer(object):
                 su = Service('<'+url+'>', stars[s])
                 fls = self.includeFilter([su], fl)
                 if len(fls) > 0:
+                    su.filters = list(su.filters)
                     su.filters.extend(fls)
                     su.filters = set(su.filters)
                     fl = list(set(fl) - set(fls))
@@ -418,35 +419,45 @@ class MediatorDecomposer(object):
             for sm in selectedmolecules[s]:
                 smolink = molConn[sm]
                 for c in sc:
+                    connectingtp = []
+                    for tp in stars[s]:
+                        if tp.theobject.name == c:
+                            pred = utils.getUri(tp.predicate, self.prefixes)[1:-1]
+                            if pred not in connectingtp:
+                                connectingtp.append(pred)
                     cmols = selectedmolecules[c]
-                    nms = [m for m in smolink if m in cmols]
+                    srange = [r for p in self.config.metadata[sm]['predicates'] for r in p['range'] if p['predicate'] in connectingtp]
+
+                    nms = [m for m in smolink if m in cmols and m in srange]
                     if len(nms) > 0:
                         res[s].append(sm)
+                        res[s] = list(set(res[s]))
                         res[c].extend(nms)
+                        res[c] = list(set(res[c]))
         #check predicate level connections
-        newfilteredonly = {}
-        for s in res:
-            sc = [c for c in conn if s in conn[c]]
-            for c in sc:
-                connectingtp = []
-                for tp in stars[c]:
-                    if tp.theobject.name == s:
-                        pred = utils.getUri(tp.predicate, self.prefixes)[1:-1]
-                        if pred not in connectingtp:
-                            connectingtp.append(pred)
-                sm = selectedmolecules[s]
-
-                for m in sm:
-                    srange = [p for r in self.config.metadata[m]['predicates'] for p in r['range'] if
-                              r['predicate'] in connectingtp]
-                    filteredmols = [r for r in res[s] if r in srange]
-                    if len(filteredmols) > 0:
-                        if s in newfilteredonly:
-                            newfilteredonly[s].extend(filteredmols)
-                        else:
-                            res[s] = filteredmols
-        for s in newfilteredonly:
-            res[s] = list(set(newfilteredonly[s]))
+        # newfilteredonly = {}
+        # for s in res:
+        #     sc = [c for c in conn if s in conn[c]]
+        #     for c in sc:
+        #         connectingtp = []
+        #         for tp in stars[c]:
+        #             if tp.theobject.name == s:
+        #                 pred = utils.getUri(tp.predicate, self.prefixes)[1:-1]
+        #                 if pred not in connectingtp:
+        #                     connectingtp.append(pred)
+        #         sm = selectedmolecules[s]
+        #
+        #         for m in sm:
+        #             srange = [p for r in self.config.metadata[m]['predicates'] for p in r['range'] if
+        #                       r['predicate'] in connectingtp]
+        #             filteredmols = [r for r in res[s] if r in srange]
+        #             if len(filteredmols) > 0:
+        #                 if s in newfilteredonly:
+        #                     newfilteredonly[s].extend(filteredmols)
+        #                 else:
+        #                     res[s] = filteredmols
+        # for s in newfilteredonly:
+        #     res[s] = list(set(newfilteredonly[s]))
 
         for s in res:
             if len(res[s]) == 0:
