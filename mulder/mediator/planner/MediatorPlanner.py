@@ -246,7 +246,7 @@ class MediatorPlanner(object):
         if not decided and not lowSelectivityLeft and lowSelectivityRight and \
             (not isinstance(l, TreePlan) or not l.operator.__class__.__name__ == "NestedHashJoinFilter" or not l.operator.__class__.__name__ == "Xunion")\
             and (not isinstance(r, TreePlan) or not r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter" or not r.operator.__class__.__name__== "Xunion"):
-            n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
+            n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
         elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True

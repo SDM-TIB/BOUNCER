@@ -71,6 +71,7 @@ class Tree(object):
     def constantPercentage(self):
         return self.constantNumber()/self.places()
 
+
 class Node(Tree):
 
     def __init__(self, l, r, filters=[], join_type='I'):
@@ -309,6 +310,7 @@ def sort(lss):
         lss.pop(m)
     return lo
 
+
 def createLeafs(lss,filters=[], dependent=False):
 
     d = dict()
@@ -383,12 +385,13 @@ def makeNode(l, r,filters=[], dependent=False):
 
 def makeBushyTree(ss,filters=[], dependent=False):
     (d, pq) = createLeafs(ss, filters, dependent)
-    heapq.heapify(pq)
+
+    # heapq.heapify(pq)
     others = []
     while len(pq) > 1:
         done = False
-        l = heapq.heappop(pq)
-        lpq = heapq.nsmallest(len(pq), pq)
+        l = pq.pop(0)  # heapq.heappop(pq)
+        lpq = pq  # heapq.nsmallest(len(pq), pq)
         for i in range(0, len(pq)):
             r = lpq[i]
             if shareAtLeastOneVar(l, r):
@@ -398,7 +401,7 @@ def makeBushyTree(ss,filters=[], dependent=False):
                 else:
                     n = makeNode(l, r, filters, dependent)
 
-                heapq.heappush(pq, n)
+                pq.insert(0, n) # heapq.heappush(pq, n)
                 done = True
                 break
         if not done: 

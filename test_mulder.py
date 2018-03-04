@@ -154,7 +154,7 @@ if __name__ == '__main__':
     plan = planner.createPlan()
     pt = time() - time1
     print(plan)
-    #exit()
+    # exit()
     output = Queue()
     #plan.execute(output)
     print("*+*+*+*+*+*+*+*+*+*+*+*+*+++++")
