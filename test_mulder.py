@@ -182,7 +182,7 @@ if __name__ == '__main__':
     if user is None:
         user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
     else:
-        user = User("P5", url=tempType)
+        user = User("P5", url=user)
 
     server = 'http://localhost:9999/validate/retrieve'
     accesscontrol = AccessControl(server)
@@ -210,7 +210,7 @@ if __name__ == '__main__':
     i = 0
     p2 = Process(target=plan.execute, args=(output,))
     p2.start()
-    p3 = Process(target=conclude, args=(output, p2, True, False))
+    p3 = Process(target=conclude, args=(output, p2, False, False))
     p3.start()
     signal.signal(12, onSignal1)
 
