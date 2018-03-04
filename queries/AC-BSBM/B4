@@ -6,7 +6,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
-SELECT DISTINCT ?productType ?productTypeComment ?review ?reviewer
+SELECT DISTINCT ?productType ?productTypeComment ?review
 WHERE {
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> a  ?productType .
 	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:comment ?productComment .
