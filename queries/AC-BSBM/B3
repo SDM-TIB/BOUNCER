@@ -16,3 +16,4 @@ WHERE {
 	?offer bsbm:validTo ?date .
 	FILTER (?deliveryDays <= 3) .
 }
+limit 10000

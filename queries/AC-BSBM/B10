@@ -14,3 +14,4 @@ WHERE {
 	?productFeature rdfs:comment ?productFeatureComment.
 	?productFeature dc:publisher ?productFeaturePublisher.
 }
+limit 10000

@@ -21,3 +21,4 @@ WHERE {
 	?publisher rdfs:comment ?publisherComment.
 	?publisher bsbm:country ?publishercountry.
 }
+limit 10000
