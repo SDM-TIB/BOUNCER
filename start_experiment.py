@@ -169,6 +169,7 @@ def printInfo(p2=None):
 
 
 def onSignal1(s, stackframe):
+    printInfo()
     cs = active_children()
     for c in cs:
         try:
