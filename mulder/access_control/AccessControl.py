@@ -585,6 +585,7 @@ def getmappedds(ap):
 
     return ap
 
+
 if __name__=='__main__':
 
     server = 'http://localhost:9999/validate/retrieve'
