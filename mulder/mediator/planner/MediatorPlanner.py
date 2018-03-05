@@ -682,7 +682,7 @@ def contactSourceAux(referer, server, path, port, query, queue):
 
     # Setting variables to return.
     b = None
-    reslist = []
+    reslist = 0
 
     # Formats of the response.
     json = "application/sparql-results+json"

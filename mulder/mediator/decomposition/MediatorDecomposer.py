@@ -226,7 +226,7 @@ class MediatorDecomposer(object):
         # print("MT-Maching:", res)
 
         # Access control
-        policies = self.accessControl.get_access_policies(res, stars, self.query, self.user)
+        policies = self.accessControl.get_access_policies(res, stars, self.query, self.user, self.config.metadata)
         self.accesspolicy = policies
         acres = self.accessControl.get_runnable_sequences(res, stars, self.query, policies, conn)
         if len(acres) == 0:
@@ -296,7 +296,9 @@ class MediatorDecomposer(object):
     def getSplan(self, s, stars, soln, fl, dependent=False):
         splan = None
         if len(soln['dataset']) == 1:
-            splan = Service('<'+soln['dataset'][0]+'>', stars[s])
+            endp = soln['dataset'][0]
+
+            splan = Service('<'+endp+'>', stars[s])
             splanfl = self.includeFilter([splan], fl)
             if len(splanfl) > 0:
                 splan.filters.extend(splanfl)

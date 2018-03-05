@@ -44,7 +44,7 @@ class AccessControl(object):
 
         return accesspolicies
 
-    def get_access_policies(self, res, stars, query, user):
+    def get_access_policies(self, res, stars, query, user, metadata):
         """
         Return access policies associated with each (star,moleculetemplate) pairs for a user
         :param res: matching molecule templates per star {s:[M1, M2, ..], ..}
@@ -67,7 +67,8 @@ class AccessControl(object):
                 aps = self.get_policy(user=user,
                                       molecule=m,
                                       properties=preds,
-                                      operation=Operation())
+                                      operation=Operation(),
+                                      dataset=metadata[m]['wrappers'][0]['url'])
                 apolicies[m] = aps
 
             accessPolicies[r] = apolicies
