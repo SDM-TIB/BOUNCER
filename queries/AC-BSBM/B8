@@ -21,4 +21,4 @@ WHERE {
 	?reviewer foaf:name ?revName .
 	?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE>.
 	?reviewer dc:date ?reviewerPublishDate.
-}limit 1000
+}

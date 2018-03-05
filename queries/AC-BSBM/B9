@@ -20,4 +20,4 @@ WHERE {
 	?offer dc:publisher ?vendor .
 	?publisher rdfs:comment ?publisherComment.
 	?publisher bsbm:country ?publishercountry.
-}limit 1000
+}

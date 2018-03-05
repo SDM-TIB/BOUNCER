@@ -18,4 +18,4 @@ WHERE {
 	?review bsbm:reviewFor <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17>.
 	?review dc:title ?revTitle.
 	?review rev:text ?revText.
-}limit 1000
+}

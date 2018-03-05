@@ -26,4 +26,4 @@ WHERE {
 	?reviewer dc:publisher ?reviewerPublisher.
 	?reviewer dc:date ?reviewerPublishDate.
 
-}limit 1000
+}

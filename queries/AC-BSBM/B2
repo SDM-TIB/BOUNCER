@@ -19,4 +19,4 @@ WHERE {
     ?review bsbm:rating4 ?rating4 .
     ?review rev:text ?revText .
 
-}limit 1000
+}

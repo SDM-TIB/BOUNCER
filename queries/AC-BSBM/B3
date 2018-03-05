@@ -15,4 +15,4 @@ WHERE {
 	?offer bsbm:price ?price .
 	?offer bsbm:validTo ?date .
 	FILTER (?deliveryDays <= 3) .
-}limit 1000
+}
