@@ -256,6 +256,7 @@ class MediatorDecomposer(object):
 
             plans.append(solnplan)
 
+        # TODO: evaluate multiple plans and select one
         plans = plans[0]
 
         if len(plans) > 1:

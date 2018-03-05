@@ -172,7 +172,7 @@ def onSignal1(s, stackframe):
     cs = active_children()
     for c in cs:
         try:
-            os.kill(c.pid, 9)
+            os.kill(c.pid, 15)
         except OSError as ex:
             continue
     sys.exit(s)

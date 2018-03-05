@@ -642,7 +642,10 @@ def contactSource(molecule, query, queue, config, limit=-1):
     server = molecule
 
     referer = server
-    server = server.split("http://")[1]
+    try:
+        server = server.split("http://")[1]
+    except:
+        print("Server: ", server)
     if '/' in server:
         (server, path) = server.split("/", 1)
     else:
