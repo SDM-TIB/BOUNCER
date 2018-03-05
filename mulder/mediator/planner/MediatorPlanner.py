@@ -610,21 +610,21 @@ class IndependentOperator(object):
         self.q = None
         self.q = Queue()
 
-        self.p = Process(target=self.contact, args=(self.server, self.query_str, self.q, self.config, self.tree.service.limit,))
+        self.p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit,))
         self.p.start()
-        i = 0
-        while True:
-            # Get the next item in queue.
-            res = self.q.get(True)
-            # Put the result into the output queue.
-            #print res
-            i += 1
-            outputqueue.put(res)
-            # Check if there's no more data.
-            if res == "EOF":
-                break
-        #print self.tree.service.limit, i, "total - Independent operator done", self.query_str
-        self.p.terminate()
+        # i = 0
+        # while True:
+        #     # Get the next item in queue.
+        #     res = self.q.get(True)
+        #     # Put the result into the output queue.
+        #     #print res
+        #     i += 1
+        #     outputqueue.put(res)
+        #     # Check if there's no more data.
+        #     if res == "EOF":
+        #         break
+        # #print self.tree.service.limit, i, "total - Independent operator done", self.query_str
+        # self.p.terminate()
 
 
 def contactSource(molecule, query, queue, config, limit=-1):
