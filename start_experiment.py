@@ -96,7 +96,7 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
     p2.start()
     p3 = Process(target=conclude, args=(res, p2, printResults))
     p3.start()
-    signal.signal(9, onSignal1)
+    signal.signal(12, onSignal1)
 
     while True:
         if p2.is_alive() and not p3.is_alive():
@@ -111,7 +111,7 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
 
 def conclude(res, p2, printResults):
 
-    signal.signal(9, onSignal2)
+    signal.signal(12, onSignal2)
     global t1
     global tn
     global c1
@@ -124,7 +124,7 @@ def conclude(res, p2, printResults):
             t1 = time2
             tn = time2
             print ("Empty set.")
-            printInfo()
+            printInfo(p2)
             return
 
         while (ri != "EOF"):
@@ -135,14 +135,14 @@ def conclude(res, p2, printResults):
                 c1 = 1
             print (ri)
             ri = res.get(True)
-        printInfo()
+        printInfo(p2)
 
     else:
         if (ri == "EOF"):
             time2 = time() - time1
             t1 = time2
             tn = time2
-            printInfo()
+            printInfo(p2)
             return
 
         while (ri != "EOF"):
@@ -153,10 +153,10 @@ def conclude(res, p2, printResults):
                 c1 = 1
             #print cn, ri
             ri = res.get(True)
-        printInfo()
+        printInfo(p2)
 
 
-def printInfo():
+def printInfo(p2=None):
     global tn
     if tn == -1:
        tn = time() - time1
@@ -164,13 +164,15 @@ def printInfo():
 
     print(l)
     logger.info(l)
+    if p2 is not None:
+        p2.terminate()
 
 
 def onSignal1(s, stackframe):
     cs = active_children()
     for c in cs:
         try:
-            os.kill(c.pid, s)
+            os.kill(c.pid, 9)
         except OSError as ex:
             continue
     sys.exit(s)

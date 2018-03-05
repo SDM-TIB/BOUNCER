@@ -700,7 +700,7 @@ def contactSourceAux(referer, server, path, port, query, queue):
         res = resp.text.replace("false", "False")
         res = res.replace("true", "True")
         res = eval(res)
-        reslist = []
+        reslist = 0
 
         if type(res) == dict:
             b = res.get('boolean', None)
@@ -727,7 +727,8 @@ def contactSourceAux(referer, server, path, port, query, queue):
                             x[key] = props['value'] + suffix
 
                     queue.put(x)
-                reslist = res['results']['bindings']
+                    reslist += 1
+                # reslist = res['results']['bindings']
 
                 # Every tuple is added to the queue.
                 #for elem in reslist:
@@ -741,6 +742,6 @@ def contactSourceAux(referer, server, path, port, query, queue):
     # print server, query, len(reslist)
 
     # print "Contact Source returned: ", len(reslist), ' results'
-    return (b, len(reslist))
+    return b, reslist
 
 
