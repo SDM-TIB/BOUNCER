@@ -5,7 +5,7 @@ PREFIX rev: <http://purl.org/stuff/rev#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
-SELECT DISTINCT ?product ?offer ?vendor ?producerComment ?vendorLabel
+SELECT DISTINCT ?product ?offer ?publisher ?producerComment
 WHERE {
 	?product a  ?productType .
 	?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3482> .
@@ -20,7 +20,7 @@ WHERE {
 	?productType rdfs:comment ?productTypeComment .
 	?producer rdfs:comment ?producerComment.
 	?producer dc:publisher ?producerPublisher.
-	?vendor rdfs:label ?vendorLabel.
-	?vendor rdfs:comment ?vendorComment.
-	?vendor bsbm:country ?vcountry.
+	?publisher rdfs:label ?publisherLabel.
+	?publisher rdfs:comment ?publisherComment.
+	?publisher bsbm:country ?publishercountry.
 }limit 1000

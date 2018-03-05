@@ -72,6 +72,14 @@ def create_dependency_graph(res, stars, query, policies, queryConnections):
                             preds = getPredicates(stars[s], query.prefs)
                             cpVars[c] = preds
                     if len(cVars) == 0:
+
+                        if len(queryConnections[s]) > 0:
+                            for c in queryConnections[s]:
+                                cVars.append(c)
+                                preds = getPredicates(stars[s], query.prefs)
+                                cpVars[c] = preds
+                    if len(cVars) == 0:
+                        print("Non-joinable star found!")
                         return {}
                     preds = [p for c in list(dVars.values()) for p in c]
                     for s2 in cpVars:

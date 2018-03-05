@@ -19,7 +19,8 @@ WHERE {
 	?reviewer bsbm:country ?country.
 	?reviewer dc:publisher ?reviewerPublisher.
 	?reviewer dc:date ?reviewerPublishDate.
-	?vendor bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE> .
-	?vendor rdfs:comment ?comment .
-	?vendor rdfs:label ?vLabel .
-}limit 1000
+	?publisher bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE> .
+	?publisher rdfs:comment ?comment .
+	?publisher rdfs:label ?publisherLabel .
+}
+limit 100

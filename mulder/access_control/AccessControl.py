@@ -88,15 +88,15 @@ class AccessControl(object):
         """
         # Sanity check: if projected variables have access grant
         if not self.is_projection_granted(query, stars, policies):
-            # print("Projection is not granted")
+            print("Projection is not granted")
             return []
         depGraphs = PolicyUtility.create_dependency_graph(res, stars, query, policies, queryConnections)
         execGraphs = []
-
-        # print("Dependency graph:", depGraphs)
+        if len(depGraphs) == 0:
+            print("Dependency graph is Empty!")
         for g in depGraphs:
             G = PolicyUtility.make_di_graph(g)
-            # PolicyUtility.draw_graph(G)
+            PolicyUtility.draw_graph(G)
             # check if a graph is cyclic or it contains a node with no outgoing edge
             if PolicyUtility.is_cyclic(G) or not PolicyUtility.contains_independent_node(G):
                 continue
