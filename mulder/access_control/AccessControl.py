@@ -96,7 +96,7 @@ class AccessControl(object):
             print("Dependency graph is Empty!")
         for g in depGraphs:
             G = PolicyUtility.make_di_graph(g)
-            PolicyUtility.draw_graph(G)
+            # PolicyUtility.draw_graph(G)
             # check if a graph is cyclic or it contains a node with no outgoing edge
             if PolicyUtility.is_cyclic(G) or not PolicyUtility.contains_independent_node(G):
                 continue
