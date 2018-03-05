@@ -123,10 +123,10 @@ def create_dependency_graph(res, stars, query, policies, queryConnections):
                         else:
                             deniedProjections[s] = [s2]
 
-                if 'DJ' in depends and len(depends[s]['DJ']) > 1:
-                    print("Multiple dependency graph must be created with one DJ to others (DNJ+I)")
+                # if 'DJ' in depends[s] and len(depends[s]['DJ']) > 1:
+                #     print("Multiple dependency graph must be created with one DJ to others (DNJ+I)")
 
-                if 'DNJ' in depends and len(depends[s]['DNJ']) > 1:
+                if 'DNJ' in depends[s] and len(depends[s]['DNJ']) > 1:
                     print("Multiple dependency graph must be created with one DNJ to others (DJ+I)")
 
     # This was checked in AccessControl.get_runnable_sequences() for sanity check
@@ -138,15 +138,19 @@ def create_dependency_graph(res, stars, query, policies, queryConnections):
             else:
                 return {}
 
-    multipleDependency = [s for s in depends if 'DJ' in depends and len(depends[s]['DJ']) > 1 or 'DNJ' in depends and len(depends[s]['DNJ']) > 1]
+    multipleDependency = {s:depends[s] for s in depends if 'DNJ' in depends[s] and len(depends[s]['DNJ']) > 1} # 'DJ' in depends[s] and len(depends[s]['DJ']) > 1 or
     if len(multipleDependency) > 0:
-        singledependencies = [s for s in depends if 'DJ' in depends and len(depends[s]['DJ']) <= 1 and 'DNJ' in depends and len(depends[s]['DNJ']) <= 1]
+        singledependencies = {s:depends[s] for s in depends if "I" in depends[s] or 'DJ' in depends[s] or 'DNJ' in depends[s] and len(depends[s]['DNJ']) <= 1} # and len(depends[s]['DJ']) <= 1
         multigraph = get_possible_dependencies(multipleDependency)
         for r in multigraph:
-            dependency_graph.append(singledependencies+r)
+            for dep in r:
+                singledep = singledependencies.copy()
+                singledep.update(dep)
+                dependency_graph.append(singledep)
 
     else:
         dependency_graph = [depends]
+
     return dependency_graph
 
 
@@ -157,14 +161,16 @@ def get_possible_dependencies(multipleDependency):
         dep = []
         to_remove = []
         for m in multi:
-            if len(multi[m]) == 0:
+            mm = multi[m]['DNJ']
+            if len(mm) == 0:
                 to_remove.append(m)
                 continue
 
-            dep.append(multi[m].pop())
+            s2, context = mm.popitem()
+            dep.append({m: {'DNJ': {s2:context}}})
 
         for r in to_remove:
-            multi.remove(r)
+            del multi[r]
         if len(dep) > 0:
             res.append(dep)
 

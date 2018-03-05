@@ -95,7 +95,7 @@ class MediatorDecomposer(object):
             if gs:
                 if not isinstance(gs, list):
                     if len(sl) > 0:
-                        gs = [gs].extend(sl)
+                        [gs].extend(sl)
                     else:
                         gs = [gs]
 
@@ -247,11 +247,16 @@ class MediatorDecomposer(object):
         # print("Runnable Sequences:", acres)
         plans = []
         for soln in acres:
+            solnplan = []
             for e in soln:
                 # print(e)
                 # print(soln[e])
                 plan = self.make_plan(e, stars, soln[e], fl)
-                plans.append(plan)
+                solnplan.append(plan)
+
+            plans.append(solnplan)
+
+        plans = plans[0]
 
         if len(plans) > 1:
             # Make a call similar to this planer
