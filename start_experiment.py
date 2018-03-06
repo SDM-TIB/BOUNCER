@@ -175,13 +175,18 @@ def onSignal1(s, stackframe):
         try:
             os.kill(c.pid, 15)
         except OSError as ex:
+            try:
+                os.kill(c.pid, 9)
+            except:
+                pass
             continue
-    sys.exit(s)
+
+    sys.exit(9)
 
 
 def onSignal2(s, stackframe):
     printInfo()
-    sys.exit(s)
+    sys.exit(9)
 
 
 def get_options(argv):
