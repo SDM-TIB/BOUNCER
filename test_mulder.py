@@ -156,11 +156,11 @@ def usage():
 
 
 if __name__ == '__main__':
+    user = None
+    #(configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
 
-    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
-
-    queryss = open(queryfile).read()
-    config = ConfigFile(configfile)
+    queryss = open('queries/AC-BSBM/B3').read()
+    config = ConfigFile('config/config.json')
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
 
@@ -180,7 +180,7 @@ if __name__ == '__main__':
     qname = 'Q1'
     time1 = time()
     if user is None:
-        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
+        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_a9beb0')
     else:
         user = User("P5", url=user)
 
