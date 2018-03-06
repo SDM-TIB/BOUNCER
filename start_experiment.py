@@ -96,7 +96,7 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
     p2.start()
     p3 = Process(target=conclude, args=(res, p2, printResults))
     p3.start()
-    signal.signal(9, onSignal1)
+    signal.signal(15, onSignal1)
 
     while True:
         if p2.is_alive() and not p3.is_alive():
