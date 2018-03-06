@@ -288,7 +288,7 @@ class MediatorDecomposer(object):
             if len(plan) > 1:
                 plan = [self.makePlanAux(plan, [], dependent=True)]
 
-            plan.insert(0, splan)
+            plan.append(splan)
             plan = self.makePlanAux(plan, [], dependent=True)
             plan = JoinBlock(plan)
             return plan
