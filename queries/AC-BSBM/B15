@@ -1,0 +1,20 @@
+PREFIX bsbm: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX rev: <http://purl.org/stuff/rev#>
+PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
+
+SELECT DISTINCT ?product ?productTypeComment ?productFeatureComment
+WHERE {
+   ?product rdf:type ?productType .
+   ?product rdfs:comment ?productComment .
+   ?product bsbm:productFeature ?productFeature .
+
+   ?productType rdfs:comment ?productTypeComment .
+   ?productType rdfs:label ?productTypeLabel .
+
+   ?productFeature rdfs:label ?productFeatureLabel .
+   ?productFeature rdfs:comment ?productFeatureComment.
+}
+limit 10000

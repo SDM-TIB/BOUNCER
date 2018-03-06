@@ -5,17 +5,16 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
-SELECT DISTINCT ?offer ?price
+SELECT DISTINCT ?product ?offer ?price
 WHERE {
-  ?product rdfs:label ?productLabel .
+  ?product rdfs:comment ?productComment .
+  ?product dc:publisher ?publisher .
 
   ?offer bsbm:product ?product .
   ?offer bsbm:vendor ?vendor .
-  ?offer dc:publisher ?vendor
-  ?offer bsbm:deliveryDays ?deliveryDays .
   ?offer bsbm:price ?price .
-  ?offer bsbm:validTo ?date .
 
-  FILTER (?deliveryDays <= 3) .
+  ?vendor rdfs:label ?vendorLabel .
+  ?vendor rdfs:comment ?vendorComment .
 }
 limit 10000

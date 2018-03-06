@@ -7,15 +7,18 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 SELECT DISTINCT ?producerComment ?offer ?vendor ?review
 WHERE {
-	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> a  ?productType .
-	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> rdfs:comment ?productComment .
-	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> bsbm:producer ?producer .
-	<http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> dc:publisher ?publisher .
-	?productType rdfs:comment ?productTypeComment .
-	?producer rdfs:label ?producerLabel .
-	?producer rdfs:comment ?producerComment.
-	?producer dc:publisher ?producerPublisher.
-	?review bsbm:reviewFor <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17>.
-	?review dc:title ?revTitle.
-	?review rev:text ?revText.
+  <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> a  ?productType .
+  <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> rdfs:comment ?productComment .
+  <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> bsbm:producer ?producer .
+  <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17> dc:publisher ?publisher .
+
+  ?productType rdfs:comment ?productTypeComment .
+
+  ?producer rdfs:label ?producerLabel .
+  ?producer rdfs:comment ?producerComment.
+  ?producer dc:publisher ?producerPublisher.
+
+  ?review bsbm:reviewFor <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product17>.
+  ?review dc:title ?revTitle.
+  ?review rev:text ?revText.
 }

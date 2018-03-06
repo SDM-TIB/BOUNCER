@@ -8,19 +8,23 @@ PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
 SELECT DISTINCT ?product ?productType ?productTypeComment ?review ?revName
 WHERE {
-	?product a  ?productType .
-	?product rdfs:comment ?productComment .
-	?product dc:publisher ?publisher .
-	?productType rdfs:comment ?productTypeComment .
-	?review bsbm:reviewFor ?product .
-	?review rev:reviewer ?reviewer .
-	?review dc:title ?revTitle .
-	?reviewer foaf:name ?revName .
-	?reviewer bsbm:country ?country.
-	?reviewer dc:publisher ?reviewerPublisher.
-	?reviewer dc:date ?reviewerPublishDate.
-	?publisher bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE> .
-	?publisher rdfs:comment ?comment .
-	?publisher rdfs:label ?publisherLabel .
+  ?product a  ?productType .
+  ?product rdfs:comment ?productComment .
+  ?product dc:publisher ?publisher .
+
+  ?productType rdfs:comment ?productTypeComment .
+
+  ?review bsbm:reviewFor ?product .
+  ?review rev:reviewer ?reviewer .
+  ?review dc:title ?revTitle .
+
+  ?reviewer foaf:name ?revName .
+  ?reviewer bsbm:country ?country.
+  ?reviewer dc:publisher ?reviewerPublisher.
+  ?reviewer dc:date ?reviewerPublishDate.
+
+  ?publisher bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  ?publisher rdfs:comment ?comment .
+  ?publisher rdfs:label ?publisherLabel .
 }
 limit 10000

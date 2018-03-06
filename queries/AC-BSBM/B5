@@ -7,20 +7,23 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 SELECT DISTINCT ?product ?offer ?publisher ?producerComment
 WHERE {
-	?product a  ?productType .
-	?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3482> .
-	?product rdfs:comment ?productComment .
-	?product bsbm:producer ?producer .
-	?product dc:publisher ?publisher .
-	?product bsbm:productPropertyTextual1 ?propertyTextual1 .
-	?product bsbm:productPropertyTextual2 ?propertyTextual2 .
-	?product bsbm:productPropertyTextual3 ?propertyTextual3 .
-	?product bsbm:productPropertyNumeric1 ?propertyNumeric1 .
-	?product bsbm:productPropertyNumeric2 ?propertyNumeric2 .
-	?productType rdfs:comment ?productTypeComment .
-	?producer rdfs:comment ?producerComment.
-	?producer dc:publisher ?producerPublisher.
-	?publisher rdfs:label ?publisherLabel.
-	?publisher rdfs:comment ?publisherComment.
-	?publisher bsbm:country ?publishercountry.
+  ?product a  ?productType .
+  ?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3482> .
+  ?product rdfs:comment ?productComment .
+  ?product bsbm:producer ?producer .
+  ?product dc:publisher ?publisher .
+  ?product bsbm:productPropertyTextual1 ?propertyTextual1 .
+  ?product bsbm:productPropertyTextual2 ?propertyTextual2 .
+  ?product bsbm:productPropertyTextual3 ?propertyTextual3 .
+  ?product bsbm:productPropertyNumeric1 ?propertyNumeric1 .
+  ?product bsbm:productPropertyNumeric2 ?propertyNumeric2 .
+
+  ?productType rdfs:comment ?productTypeComment .
+
+  ?producer rdfs:comment ?producerComment.
+  ?producer dc:publisher ?producerPublisher.
+
+  ?publisher rdfs:label ?publisherLabel.
+  ?publisher rdfs:comment ?publisherComment.
+  ?publisher bsbm:country ?publishercountry.
 }

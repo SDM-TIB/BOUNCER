@@ -6,17 +6,17 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?text ?reviewDate ?reviewerName
 WHERE {
-	?product rdfs:label ?productLabel .
-	?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3361>
-	?review bsbm:reviewFor ?product .
-	?review dc:title ?title .
-	?review rev:text ?text .
-	?review bsbm:reviewDate ?reviewDate .
-	?review rev:reviewer ?reviewer .
-	?review dc:publisher ?reviewPublisher .
-	?reviewer foaf:name ?reviewerName .
-	?reviewer a foaf:Person .
-	?reviewer bsbm:country ?country .
-	FILTER langMatches( lang(?text), "EN" )
+  ?product rdfs:label ?productLabel .
+  ?product bsbm:productFeature <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/ProductFeature3361>
+  ?review bsbm:reviewFor ?product .
+  ?review dc:title ?title .
+  ?review rev:text ?text .
+  ?review bsbm:reviewDate ?reviewDate .
+  ?review rev:reviewer ?reviewer .
+  ?review dc:publisher ?reviewPublisher .
+  ?reviewer foaf:name ?reviewerName .
+  ?reviewer a foaf:Person .
+  ?reviewer bsbm:country ?country .
+  FILTER langMatches( lang(?text), "EN" )
 
 }
