@@ -182,7 +182,7 @@ class MediatorPlanner(object):
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True
         else:
-            n, dependent_join = self.joinIndependentAnapsid(l, r)
+            n, dependent_join = self.joinIndependent(l, r)
 
         if n and isinstance(n.left, IndependentOperator) and isinstance(n.left.tree, Leaf):
             if (n.left.constantPercentage() <= 0.5) and not (n.left.tree.service.allTriplesGeneral()):
@@ -239,7 +239,6 @@ class MediatorPlanner(object):
                 n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
             # print "Planner case 2.5", type(r)
         # Case 3: both operators are low selective
-
         else:
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
             # print "Planner CASE 3: xgjoin"
@@ -268,6 +267,8 @@ class MediatorPlanner(object):
     def joinIndependent(self, l, r):
         join_variables = l.vars & r.vars
         all_variables = l.vars | r.vars
+        # noInstantiatedLeftStar = False
+        # noInstantiatedRightStar = False
         lowSelectivityLeft = l.allTriplesLowSelectivity()
         lowSelectivityRight = r.allTriplesLowSelectivity()
         n = None
@@ -288,17 +289,16 @@ class MediatorPlanner(object):
             dependent_join = True
             decided = True
 
-        if isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(l, TreePlan) and\
-                l.operator.__class__.__name__ == "Xunion":
+        if isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(l,
+                                                                                                TreePlan) and l.operator.__class__.__name__ == "Xunion":
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
             decided = True
 
-        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and \
-                isinstance(r.left, IndependentOperator) and isinstance(l, TreePlan) and \
-                not l.operator.__class__.__name__ == "NestedHashJoinFilter":
-
-            if isinstance(l.right, IndependentOperator) and \
-                    r.left.tree.service.triples[0].subject.name == l.right.tree.service.triples[0].subject.name:
+        if not decided and isinstance(r, TreePlan) and r.operator.__class__.__name__ == "Xunion" and isinstance(r.left,
+                                                                                                                IndependentOperator) and isinstance(
+                l, TreePlan) and not l.operator.__class__.__name__ == "NestedHashJoinFilter":
+            if isinstance(l.right, IndependentOperator) and r.left.tree.service.triples[0].subject.name == \
+                    l.right.tree.service.triples[0].subject.name:
                 n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                 dependent_join = True
                 decided = True
@@ -307,26 +307,28 @@ class MediatorPlanner(object):
                 n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                 dependent_join = True
                 decided = True
-        if not decided and not lowSelectivityLeft and lowSelectivityRight and \
-            (not isinstance(l, TreePlan) or
-             not l.operator.__class__.__name__ == "NestedHashJoinFilter" or
-             not l.operator.__class__.__name__ == "Xunion") and \
-            (not isinstance(r, TreePlan) or
-             not r.operator.__class__.__name__ == "Xgjoin" or
-             r.operator.__class__.__name__ == "NestedHashJoinFilter" or
-             not r.operator.__class__.__name__== "Xunion"):
 
-            n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-
-        elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
+        if not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan) and not decided:  #
             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
             dependent_join = True
         elif lowSelectivityLeft and not lowSelectivityRight and not isinstance(l, TreePlan) and not decided:
             n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
             dependent_join = True
-        elif not decided:
+        elif not decided and not lowSelectivityLeft and lowSelectivityRight and (not isinstance(l,
+                                                                                                TreePlan) or not l.operator.__class__.__name__ == "NestedHashJoinFilter" or not l.operator.__class__.__name__ == "Xunion") and (
+                not isinstance(r,
+                               TreePlan) or not r.operator.__class__.__name__ == "Xgjoin" or r.operator.__class__.__name__ == "NestedHashJoinFilter" or not r.operator.__class__.__name__ == "Xunion"):
+            # if isinstance(r, TreePlan) and (set(l.vars) & set(r.operator.vars)) != set([]) and (set(l.vars) & set(r.operator.vars)) != set([]):
+            #     n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+            #     dependent_join = True
+            # elif isinstance(l, TreePlan) and (set(r.vars) & set(l.operator.vars)) != set([]) and (set(r.vars) & set(l.operator.vars)) != set([]):
+            #     n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+            #     dependent_join = True
+            # else:
             n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
 
+        elif not decided:
+            n = TreePlan(Xgjoin(join_variables), all_variables, l, r)
         return n, dependent_join
 
     def includePhysicalOperatorsOptional(self, left, rightList):
