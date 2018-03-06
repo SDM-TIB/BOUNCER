@@ -7,9 +7,9 @@ PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
 SELECT DISTINCT ?product ?productTypeComment
 WHERE {
-   $CONSTANT$ rdf:type ?productType .
-   $CONSTANT$ rdfs:comment ?productComment .
-   $CONSTANT$ bsbm:producer ?producer .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> rdf:type ?productType .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> rdfs:comment ?productComment .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> bsbm:producer ?producer .
 
    ?productType rdfs:comment ?productTypeComment .
    ?productType rdfs:label ?productTypeLabel .
