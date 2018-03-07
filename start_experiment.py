@@ -92,7 +92,6 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
     logger.info("Plan:")
     logger.info(plan)
     pt = time() - time1
-    #print 'creando procesos'
     processqueue = Queue()
 
     p2 = Process(target=plan.execute, args=(res,processqueue, ))
@@ -109,20 +108,21 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
                 except Exception as ex:
                     print("Exception while terminating execution process", ex)
                     continue
-                print('Number of sub-processes to terminate: ', processqueue.qsize())
-                while True:
-                    try:
-                        p = processqueue.get(False)
-                        try:
-                            os.kill(p, 9)
-                            print("Process ", p, ' has been terminated')
-                        except Exception as e:
-                            continue
-                    except Empty:
-                        break
 
             else:
                 break
+    # print('Number of sub-processes to terminate: ', processqueue.qsize())
+    while True:
+
+        try:
+            p = processqueue.get(False)
+            try:
+                os.kill(p, 9)
+                # print("Process ", p, ' has been terminated')
+            except Exception as e:
+                continue
+        except Empty:
+            break
 
 
 def conclude(res, p2, printResults):

@@ -702,7 +702,7 @@ def contactSourceAux(referer, server, path, port, query, queue):
     params = {'query': query, 'format': js}
     headers = { "Accept": js}
     import requests
-    print(server)
+    # print(server)
     try:
         resp = requests.get(referer, params=params, headers=headers)
         if resp.status_code == HTTPStatus.OK:
