@@ -18,4 +18,3 @@ WHERE {
 
   FILTER (?deliveryDays <= 3) .
 }
-limit 10000

@@ -17,4 +17,3 @@ WHERE {
    ?productFeature rdfs:label ?productFeatureLabel .
    ?productFeature rdfs:comment ?productFeatureComment.
 }
-limit 10000

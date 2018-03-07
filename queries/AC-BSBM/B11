@@ -17,4 +17,3 @@ WHERE {
   ?vendor rdfs:label ?vendorLabel .
   ?vendor rdfs:comment ?vendorComment .
 }
-limit 10000

@@ -27,4 +27,3 @@ WHERE {
   ?publisher rdfs:comment ?comment .
   ?publisher rdfs:label ?publisherLabel .
 }
-limit 10000
