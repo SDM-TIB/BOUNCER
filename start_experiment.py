@@ -8,6 +8,7 @@ import string
 import sys, os, signal
 
 from multiprocessing import Process, Queue, active_children, Manager
+from multiprocessing.queues import Empty
 from time import time
 import logging
 
@@ -92,21 +93,36 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
     logger.info(plan)
     pt = time() - time1
     #print 'creando procesos'
-    p2 = Process(target=plan.execute, args=(res,))
+    processqueue = Queue()
+
+    p2 = Process(target=plan.execute, args=(res,processqueue, ))
     p2.start()
     p3 = Process(target=conclude, args=(res, p2, printResults))
     p3.start()
-    signal.signal(15, onSignal1)
+    signal.signal(12, onSignal1)
 
     while True:
-        if p2.is_alive() and not p3.is_alive():
-            try:
-                os.kill(p2.pid, 9)
-            except Exception as ex:
-                continue
-            break
-        elif not p2.is_alive() and not p3.is_alive():
-            break
+        if not p3.is_alive():
+            if p2.is_alive():
+                try:
+                    os.kill(p2.pid, 9)
+                except Exception as ex:
+                    print("Exception while terminating execution process", ex)
+                    continue
+                print('Number of sub-processes to terminate: ', processqueue.qsize())
+                while True:
+                    try:
+                        p = processqueue.get(False)
+                        try:
+                            os.kill(p, 9)
+                            print("Process ", p, ' has been terminated')
+                        except Exception as e:
+                            continue
+                    except Empty:
+                        break
+
+            else:
+                break
 
 
 def conclude(res, p2, printResults):
@@ -173,7 +189,7 @@ def onSignal1(s, stackframe):
     cs = active_children()
     for c in cs:
         try:
-            os.kill(c.pid, 15)
+            os.kill(c.pid, 9)
         except OSError as ex:
             try:
                 os.kill(c.pid, 9)

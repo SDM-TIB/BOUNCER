@@ -16,6 +16,7 @@ import string, sys
 from multiprocessing.queues import Empty
 from mulder.Operators.Optional import Optional
 
+
 class NestedHashOptional(Optional):
 
     def __init__(self, vars_left, vars_right):
@@ -33,7 +34,7 @@ class NestedHashOptional(Optional):
         newvars_right = self.vars_right - set(d.keys())
         return NestedHashOptional(newvars_left, newvars_right)
 
-    def execute(self, left_queue, right_operator, out):
+    def execute(self, left_queue, right_operator, out, processqueue=Queue()):
         
         self.left_queue = left_queue
         self.right_operator = right_operator

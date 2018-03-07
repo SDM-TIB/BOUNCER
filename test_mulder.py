@@ -1,6 +1,7 @@
 #!/usr/bin/env python3.5
 
 from multiprocessing import Process, Queue, active_children
+from multiprocessing.queues import Empty
 
 from mulder.molecule.MTManager import ConfigFile
 from mulder.mediator.decomposition.MediatorDecomposer import MediatorDecomposer
@@ -159,7 +160,7 @@ if __name__ == '__main__':
     user = None
     #(configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
 
-    queryss = open('queries/AC-BSBM/B3').read()
+    queryss = open('queries/AC-BSBM/B1').read()
     config = ConfigFile('config/config.json')
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
@@ -180,7 +181,7 @@ if __name__ == '__main__':
     qname = 'Q1'
     time1 = time()
     if user is None:
-        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_a9beb0')
+        user = User("P5", url='http://www.example.org/access-control-ontology#auth_partner_094451')
     else:
         user = User("P5", url=user)
 
@@ -203,33 +204,36 @@ if __name__ == '__main__':
     plan = planner.createPlan()
     pt = time() - time1
     print(plan)
-    # exit()
+    #exit()
     output = Queue()
+    processqueue = Queue()
     #plan.execute(output)
     print("*+*+*+*+*+*+*+*+*+*+*+*+*+++++")
     i = 0
-    p2 = Process(target=plan.execute, args=(output,))
+    p2 = Process(target=plan.execute, args=(output, processqueue, ))
     p2.start()
     p3 = Process(target=conclude, args=(output, p2, False, False))
     p3.start()
     signal.signal(12, onSignal1)
 
     while True:
-        if p2.is_alive() and not p3.is_alive():
-            try:
-                os.kill(p2.pid, 9)
-            except Exception as ex:
-                continue
-            break
-        elif not p2.is_alive() and not p3.is_alive():
-            break
+        if not p3.is_alive():
+            if p2.is_alive():
+                try:
+                    os.kill(p2.pid, 9)
+                except Exception as ex:
+                    print("Exception while terminating execution process", ex)
+                    continue
+                print('Number of processes to terminate: ', processqueue.qsize())
+                while True:
+                    try:
+                        p = processqueue.get(False)
+                        try:
+                            os.kill(p.pid, 9)
+                        except Exception as e:
+                            continue
+                    except Empty:
+                        break
 
-
-    # while True:
-    #     r = output.get()
-    #     i += 1
-    #     #print r
-    #     if r == "EOF":
-    #         print "END of results ...."
-    #         break
-    #     #print "total: ", i
+            else:
+                break

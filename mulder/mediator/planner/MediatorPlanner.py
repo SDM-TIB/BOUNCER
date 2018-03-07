@@ -405,7 +405,6 @@ class TreePlan(object):
         self.cardinality = None
         self.joinCardinality = []
 
-
     def __repr__(self):
         return self.aux(" ")
 
@@ -483,7 +482,7 @@ class TreePlan(object):
             s = s + self.right.aux(n + "  ")
         return s
 
-    def execute(self, outputqueue):
+    def execute(self, outputqueue, processqueue):
         # Evaluates the execution plan.
         if self.left: #and this.right: # This line was modified by mac in order to evaluate unary operators
             qleft  = Queue()
@@ -494,26 +493,29 @@ class TreePlan(object):
             #print "self.right: ", self.right
             #print "self.left: ", self.left
 
-            p1 = Process(target=self.left.execute, args=(qleft,))
+            p1 = Process(target=self.left.execute, args=(qleft, processqueue,))
             p1.start()
-
+            processqueue.put(p1.pid)
             if "Nested" in self.operator.__class__.__name__:
-                self.p3 = Process(target=self.operator.execute, args=(qleft, self.right, outputqueue,))
-                self.p3.start()
+                p3 = Process(target=self.operator.execute, args=(qleft, self.right, outputqueue, processqueue,))
+                p3.start()
+                processqueue.put(p3.pid)
                 return
 
             # Check the right node to determine if evaluate it or not.
             if (self.right and ((self.right.__class__.__name__ == "IndependentOperator") or (self.right.__class__.__name__ == "TreePlan"))):
-                p2 = Process(target=self.right.execute, args=(qright,))
+                p2 = Process(target=self.right.execute, args=(qright, processqueue,))
                 p2.start()
+                processqueue.put(p2.pid)
             else:
                 qright = self.right #qright.put("EOF")
 
             # Create a process for the operator node.
-            self.p = Process(target=self.operator.execute, args=(qleft, qright, outputqueue,))
+            p = Process(target=self.operator.execute, args=(qleft, qright, outputqueue, processqueue,))
             #print "left and right "
             # Execute the plan
-            self.p.start()
+            p.start()
+            processqueue.put(p.pid)
 
 
 class IndependentOperator(object):
@@ -603,7 +605,7 @@ class IndependentOperator(object):
     def aux(self, n):
         return self.tree.aux(n)
 
-    def execute(self, outputqueue):
+    def execute(self, outputqueue, processqueue=Queue()):
 
         if self.tree.service.limit == -1:
             self.tree.service.limit = 10000 #TODO: Fixed value, this can be learnt in the future
@@ -612,8 +614,9 @@ class IndependentOperator(object):
         self.q = None
         self.q = Queue()
 
-        self.p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit,))
-        self.p.start()
+        p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit,))
+        p.start()
+        processqueue.put(p.pid)
         # i = 0
         # while True:
         #     # Get the next item in queue.
@@ -697,52 +700,56 @@ def contactSourceAux(referer, server, path, port, query, queue):
 
     js = "application/sparql-results+json"
     params = {'query': query, 'format': js}
-    headers = {"User-Agent": "mulder", "Accept": js}
+    headers = { "Accept": js}
     import requests
+    print(server)
+    try:
+        resp = requests.get(referer, params=params, headers=headers)
+        if resp.status_code == HTTPStatus.OK:
+            res = resp.text.replace("false", "False")
+            res = res.replace("true", "True")
+            res = eval(res)
+            reslist = 0
 
-    resp = requests.get(referer, params=params, headers=headers)
-    if resp.status_code == HTTPStatus.OK:
-        res = resp.text.replace("false", "False")
-        res = res.replace("true", "True")
-        res = eval(res)
-        reslist = 0
+            if type(res) == dict:
+                b = res.get('boolean', None)
 
-        if type(res) == dict:
-            b = res.get('boolean', None)
-
-            if 'results' in res:
-                # print "raw results from endpoint", res
-                for x in res['results']['bindings']:
-                    for key, props in x.items():
-                        # Handle typed-literals and language tags
-                        suffix = ''
-                        if props['type'] == 'typed-literal':
-                            if isinstance(props['datatype'], bytes):
-                                suffix = "^^<" + props['datatype'].decode('utf-8') + ">"
-                            else:
-                                suffix = "^^<" + props['datatype'] + ">"
-                        elif "xml:lang" in props:
-                            suffix = '@' + props['xml:lang']
-                        try:
-                            if isinstance(props['value'], bytes):
-                                x[key] = props['value'].decode('utf-8') + suffix
-                            else:
+                if 'results' in res:
+                    # print "raw results from endpoint", res
+                    for x in res['results']['bindings']:
+                        for key, props in x.items():
+                            # Handle typed-literals and language tags
+                            suffix = ''
+                            if props['type'] == 'typed-literal':
+                                if isinstance(props['datatype'], bytes):
+                                    suffix = "^^<" + props['datatype'].decode('utf-8') + ">"
+                                else:
+                                    suffix = "^^<" + props['datatype'] + ">"
+                            elif "xml:lang" in props:
+                                suffix = '@' + props['xml:lang']
+                            try:
+                                if isinstance(props['value'], bytes):
+                                    x[key] = props['value'].decode('utf-8') + suffix
+                                else:
+                                    x[key] = props['value'] + suffix
+                            except:
                                 x[key] = props['value'] + suffix
-                        except:
-                            x[key] = props['value'] + suffix
 
-                    queue.put(x)
-                    reslist += 1
-                # reslist = res['results']['bindings']
+                        queue.put(x)
+                        reslist += 1
+                    # reslist = res['results']['bindings']
 
-                # Every tuple is added to the queue.
-                #for elem in reslist:
-                    # print elem
-                    #queue.put(elem)
+                    # Every tuple is added to the queue.
+                    #for elem in reslist:
+                        # print elem
+                        #queue.put(elem)
 
-        else:
-            print ("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
-                   + " the JSON format required, then that answer will be ignored")
+            else:
+                print ("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
+                       + " the JSON format required, then that answer will be ignored")
+    except Exception as cex:
+        print("Connection exceptions: ", cex)
+
     # print "b - ", b
     # print server, query, len(reslist)
 

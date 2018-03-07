@@ -30,7 +30,7 @@ class NestedHashJoin(Join):
         newvars = self.vars - set(d.keys())
         return NestedHashJoin(newvars)
 
-    def execute(self, left_queue, right_operator, out):
+    def execute(self, left_queue, right_operator, out, processqueue=Queue()):
 
         self.left_queue = left_queue
         self.right_operator = right_operator
