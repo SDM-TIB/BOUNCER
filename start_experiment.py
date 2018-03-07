@@ -105,21 +105,21 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
             if p2.is_alive():
                 try:
                     os.kill(p2.pid, 9)
-                except Exception as ex:
+                except OSError as ex:
                     print("Exception while terminating execution process", ex)
                     continue
-
             else:
                 break
     # print('Number of sub-processes to terminate: ', processqueue.qsize())
     while True:
-
         try:
             p = processqueue.get(False)
             try:
                 os.kill(p, 9)
                 # print("Process ", p, ' has been terminated')
-            except Exception as e:
+            except OSError as err:
+                print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
+                processqueue.put(p)
                 continue
         except Empty:
             break
