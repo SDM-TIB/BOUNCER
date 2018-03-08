@@ -700,7 +700,7 @@ def contactSourceAux(referer, server, path, port, query, queue):
 
     js = "application/sparql-results+json"
     params = {'query': query, 'format': js}
-    headers = { "Accept": js}
+    #headers = {"Accept": js}
     import requests
     # print(server)
     try:
@@ -745,11 +745,11 @@ def contactSourceAux(referer, server, path, port, query, queue):
                         #queue.put(elem)
 
             else:
-                print ("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
+                print("the source " + str(server) + " answered in " + res.getheader("content-type") + " format, instead of"
                        + " the JSON format required, then that answer will be ignored")
     except Exception as cex:
         print("Connection exceptions: ", cex)
-
+    
     # print "b - ", b
     # print server, query, len(reslist)
 
