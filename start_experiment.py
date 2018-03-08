@@ -114,15 +114,26 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
     while True:
         try:
             p = processqueue.get(False)
-            try:
-                os.kill(p, 9)
-                # print("Process ", p, ' has been terminated')
-            except OSError as err:
-                print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
-                processqueue.put(p)
-                continue
+            if check_pid(p):
+                try:
+                    os.kill(p, 9)
+                    # print("Process ", p, ' has been terminated')
+                except OSError as err:
+                    print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
+                    # processqueue.put(p)
+                    continue
         except Empty:
             break
+
+
+def check_pid(pid):
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    else:
+        return True
 
 
 def conclude(res, p2, printResults):
