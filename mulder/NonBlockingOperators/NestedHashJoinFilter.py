@@ -52,11 +52,11 @@ class NestedHashJoinFilter(Join):
         filter_bag = []
         queue = Queue()
         finalqueue = Queue()
+        counter = 0
         try:
             p = Process(target=self.processResults(queue, finalqueue,))
             p.start()
             processqueue.put(p.pid)
-            counter = 0
             while not(tuple1 == "EOF") or (len(right_queues) > 0):
                 try:
                     tuple1 = self.left_queue.get(False)
@@ -141,9 +141,12 @@ class NestedHashJoinFilter(Join):
                 except Exception as e:
                         #print "Unexpected error:", sys.exc_info()[0]
                         pass
-                finalqueue.put(counter)
         except Exception as e:
+            print("Exception in NHJF ", e)
             finalqueue.put(-2)
+
+        finalqueue.put(counter)
+
         #     toRemove = [] # stores the queues that have already received all its tuples
         #     for r in right_queues:
         #         try:
@@ -183,7 +186,6 @@ class NestedHashJoinFilter(Join):
                 tuple1 = None
 
                 while tuple1 != "EOF":
-                    print("Final count: ", counter, 'EOF count: ', eofcount)
                     try:
                         tuple1 = inqueue.get(False)
                         if tuple1 == "EOF":
@@ -193,18 +195,17 @@ class NestedHashJoinFilter(Join):
                             for v in self.vars:
                                 del tuple1[v]
                             self.probeAndInsert2(resource, tuple1, self.left_table, self.right_table, time())
-
-                        if counter == -1:
-                            try:
-                                counter = finalqueue.get(False)
-                                print("Final count: ", counter, 'EOF count: ', eofcount)
-                            except Empty:
-                                pass
-                            if eofcount == counter:
-                                break
                     except Empty:
                         pass
-
+                    if counter == -1:
+                        try:
+                            counter = finalqueue.get(False)
+                        except Empty:
+                            pass
+                        if eofcount == counter:
+                            break
+                    else:
+                        print("Final count: ", counter, 'EOF count: ', eofcount)
         except Exception:
             # This catch:
             # Empty: in tuple2 = self.right.get(False), when the queue is empty.
