@@ -136,6 +136,7 @@ class NestedHashJoinFilter(Join):
                             #     new_right_operator.execute(queue)
                             # filter_bag = []
                             # count = count + 1
+                    print("Number of NHJ requ:", counter)
                 except Empty:
                         pass
                 except Exception as e:
@@ -190,6 +191,7 @@ class NestedHashJoinFilter(Join):
                         tuple1 = inqueue.get(False)
                         if tuple1 == "EOF":
                             eofcount += 1
+                            print("EOF found:", eofcount)
                         else:
                             resource = self.getResource(tuple1)
                             for v in self.vars:
