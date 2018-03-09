@@ -23,6 +23,6 @@ WHERE {
   ?offer dc:publisher ?vendor .
 
   ?publisher rdfs:comment ?publisherComment.
-  ?publisher bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  ?publisher bsbm:country ?publishercountry.
 }
 limit 10000
