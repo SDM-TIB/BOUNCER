@@ -122,6 +122,10 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
                     print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
                     # processqueue.put(p)
                     continue
+
+                if check_pid(p):
+                    processqueue.put(p)
+
         except Empty:
             break
 
