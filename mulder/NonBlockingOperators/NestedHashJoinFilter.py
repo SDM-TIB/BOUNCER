@@ -54,7 +54,7 @@ class NestedHashJoinFilter(Join):
         finalqueue = Queue()
         p = Process(target=self.processResults(queue, finalqueue,))
         p.start()
-        processqueue.put(p.pid())
+        processqueue.put(p.pid)
         counter = 0
         while not(tuple1 == "EOF") or (len(right_queues) > 0):
             try:

@@ -104,7 +104,7 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
         if not p3.is_alive():
             if p2.is_alive():
                 try:
-                    os.kill(p2.pid(), 9)
+                    os.kill(p2.pid, 9)
                 except OSError as ex:
                     print("Exception while terminating execution process", ex)
                     continue
@@ -204,10 +204,10 @@ def onSignal1(s, stackframe):
     cs = active_children()
     for c in cs:
         try:
-            os.kill(c.pid(), 9)
+            os.kill(c.pid, 9)
         except OSError as ex:
             try:
-                os.kill(c.pid(), 9)
+                os.kill(c.pid, 9)
             except:
                 pass
             continue
