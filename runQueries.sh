@@ -8,5 +8,9 @@ echo -e  "qname\tdecompositionTime\tplanningTime\tfirstResult\toverallTime\tmore
 for n in {1..5}; do
     for query in `ls -v $1/*`; do
         (timeout -s 12 300 start_experiment.py -c $2 -q $query -u $5 -s True ) 2>> $4 >> $3;
+        # kill any remaining processes
+        # pkill -9 start_experiment.py
+        # kill -9 $(pidof start_experiment.py)
+        killall -9 start_experiment.py
     done;
 done;
