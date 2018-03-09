@@ -301,7 +301,7 @@ class MediatorPlanner(object):
             if len(join_variables):
                 if not isinstance(l, TreePlan):
                     if isinstance(r, TreePlan):
-                        if not isinstance(r.operator, NestedHashJoin):
+                        if not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
                             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                             dependent_join = True
                     else:
@@ -312,7 +312,7 @@ class MediatorPlanner(object):
                     if not isinstance(r, TreePlan):
                         n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                         dependent_join = True
-                    elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin):
+                    elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
                         n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
                         dependent_join = True
 
@@ -321,7 +321,7 @@ class MediatorPlanner(object):
             if len(join_variables):
                 if not isinstance(r, TreePlan):
                     if isinstance(l, TreePlan):
-                        if not isinstance(l.operator, NestedHashJoin):
+                        if not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
                             n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
                             dependent_join = True
                     else:
@@ -332,7 +332,7 @@ class MediatorPlanner(object):
                     if not isinstance(l, TreePlan):
                         n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
                         dependent_join = True
-                    elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin):
+                    elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
                         n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
                         dependent_join = True
 
