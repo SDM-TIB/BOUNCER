@@ -645,8 +645,6 @@ class IndependentOperator(object):
             self.tree.service.limit = 10000 #TODO: Fixed value, this can be learnt in the future
 
         # Evaluate the independent operator.
-        self.q = None
-        self.q = Queue()
 
         p = Process(target=self.contact, args=(self.server, self.query_str, outputqueue, self.config, self.tree.service.limit,))
         p.start()

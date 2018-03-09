@@ -30,7 +30,7 @@ class Xgjoin(Join):
         self.sourcesBlocked     = False
 
         # Main memory settings
-        self.memorySize   = 100000000        # Represents the main memory size (# tuples).OLD:Represents the main memory size (in KB).
+        self.memorySize   = 1000000000        # Represents the main memory size (# tuples).OLD:Represents the main memory size (in KB).
         self.fileDescriptor_left = {}
         self.fileDescriptor_right = {}
         self.memory_left  = 0
@@ -125,8 +125,8 @@ class Xgjoin(Join):
                 self.stage3()
                 return
 
-            #print "(LEFT, RIGHT) = >", self.leftcount, self.rightcount, self.vars
-            if (len(self.left_table) + len(self.right_table) >= self.memorySize):
+            # print "(LEFT, RIGHT) = >", self.leftcount, self.rightcount, self.vars
+            if len(self.left_table) + len(self.right_table) >= self.memorySize:
                 self.flushRJT()
                 print("Flushed RJT!")
 
@@ -137,7 +137,7 @@ class Xgjoin(Join):
         return
 
     def stage1(self, tuple, tuple_rjttable, other_rjttable):
-        #print " Stage 1: While one of the sources is sending data."
+        # print " Stage 1: While one of the sources is sending data."
         if (tuple != "EOF"):
             # Get the resource associated to the tuples.
             resource = ''
