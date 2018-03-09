@@ -11,6 +11,6 @@ for n in {1..5}; do
         # kill any remaining processes
         # pkill -9 start_experiment.py
         # kill -9 $(pidof start_experiment.py)
-        killall -9 start_experiment.py
+        killall -9 --quiet start_experiment.py
     done;
 done;
