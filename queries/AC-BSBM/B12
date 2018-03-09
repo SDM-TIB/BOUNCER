@@ -20,3 +20,4 @@ WHERE {
    ?reviewer foaf:name ?reviewerName .
    ?rewiewer bsbm:country ?rewiewerCountery .
 }
+limit 10000

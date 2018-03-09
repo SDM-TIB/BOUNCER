@@ -19,3 +19,4 @@ WHERE {
    ?producer rdfs:comment ?producerComment.
    ?producer dc:publisher ?producerPublisher.
 }
+limit 10000

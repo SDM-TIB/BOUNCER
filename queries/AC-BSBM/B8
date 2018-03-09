@@ -14,7 +14,6 @@ WHERE {
 
   ?productType rdfs:comment ?productTypeComment .
 
-  ?producer a bsbm:Producer .
   ?producer rdfs:label ?plabel .
   ?producer foaf:homepage ?homepage .
 
@@ -26,3 +25,4 @@ WHERE {
   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE>.
   ?reviewer dc:date ?reviewerPublishDate.
 }
+limit 10000
