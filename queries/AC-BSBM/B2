@@ -8,7 +8,7 @@ PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 SELECT DISTINCT ?review ?text
 WHERE {
    ?product bsbm:producer ?producer .
-   ?product a bsbm-inst:ProductType1147 .
+   ?product a bsbm-inst:ProductType147 .
    ?producer a bsbm:Producer .
    ?producer rdfs:label ?plabel .
    ?producer foaf:homepage ?homepage .

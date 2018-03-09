@@ -18,6 +18,6 @@ WHERE {
    ?review dc:publisher ?reviewPublisher .
 
    ?reviewer foaf:name ?reviewerName .
-   ?reviewer bsbm:country ?rewiewerCountery .
+   ?reviewer bsbm:country <http://downlode.org/rdf/iso-3166/countries#DE> .
 }
 limit 10000
