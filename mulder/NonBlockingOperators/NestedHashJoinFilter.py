@@ -54,7 +54,7 @@ class NestedHashJoinFilter(Join):
         finalqueue = Queue()
         counter = 0
         try:
-            p = Process(target=self.processResults, args=(queue, finalqueue,self.left_table, self.right_table, ))
+            p = Process(target=self.processResults, args=(queue, finalqueue,self.left_table, self.right_table, self.qresults,))
             p.start()
             processqueue.put(p.pid)
             while not(tuple1 == "EOF") or (len(right_queues) > 0):
@@ -62,7 +62,7 @@ class NestedHashJoinFilter(Join):
                     tuple1 = self.left_queue.get(False)
                     # Try to get and process tuple from left queue
                     if not(tuple1 == "EOF"):
-                        instance = self.probeAndInsert1(tuple1, self.right_table, self.left_table, time())
+                        instance = self.probeAndInsert1(tuple1, self.right_table, self.left_table, time(), self.qresults)
                         if instance: # the join variables have not been used to
                                      # instanciate the right_operator
                             filter_bag.append(tuple1)
@@ -177,7 +177,7 @@ class NestedHashJoinFilter(Join):
         # self.qresults.put("EOF")
         # return
 
-    def processResults(self, inqueue, finalqueue, left_table, right_table):
+    def processResults(self, inqueue, finalqueue, left_table, right_table, out):
         try:
             counter = -1
             eofcount = 0
@@ -194,7 +194,7 @@ class NestedHashJoinFilter(Join):
                             for v in self.vars:
                                 del tuple1[v]
 
-                            self.probeAndInsert2(resource, tuple1, left_table, right_table, time())
+                            self.probeAndInsert2(resource, tuple1, left_table, right_table, time(), out)
                     except Empty:
                         pass
                     if counter == -1:
@@ -211,7 +211,7 @@ class NestedHashJoinFilter(Join):
             # print "Unexpected error:", sys.exc_info()
             pass
 
-        self.qresults.put("EOF")
+        out.put("EOF")
         return
 
     def getResource(self, tuple):
@@ -248,7 +248,7 @@ class NestedHashJoinFilter(Join):
         # print "type(new_operator)", type(new_operator)
         return new_operator
 
-    def probeAndInsert1(self, tuple, table1, table2, time):
+    def probeAndInsert1(self, tuple, table1, table2, time, out):
         #print "in probeAndInsert1", tuple
         record = Record(tuple, time, 0)
         r = self.getResource(tuple)
@@ -260,14 +260,14 @@ class NestedHashJoinFilter(Join):
                     continue
                 x = t.tuple.copy()
                 x.update(tuple)
-                self.qresults.put(x)
+                out.put(x)
         p = table2.get(r, [])
         i = (p == [])
         p.append(record)
         table2[r] = p
         return i
 
-    def probeAndInsert2(self, resource, tuple, table1, table2, time):
+    def probeAndInsert2(self, resource, tuple, table1, table2, time, out):
         #print "probeAndInsert2", resource, tuple
         record = Record(tuple, time, 0)
         if resource in table1:
@@ -277,7 +277,7 @@ class NestedHashJoinFilter(Join):
                     continue
                 x = t.tuple.copy()
                 x.update(tuple)
-                self.qresults.put(x)
+                out.put(x)
         p = table2.get(resource, [])
         p.append(record) 
         table2[resource] = p
