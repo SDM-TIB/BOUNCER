@@ -8,9 +8,9 @@ PREFIX dc: <http://purl.org/dc/elements/1.1/>
 
 SELECT DISTINCT ?product ?productTypeComment
 WHERE {
-   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> rdf:type ?productType .
-   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> rdfs:comment ?productComment .
-   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product101> bsbm:producer ?producer .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdf:type ?productType .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> rdfs:comment ?productComment .
+   <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/dataFromProducer1/Product10> bsbm:producer ?producer .
 
    ?productType rdfs:comment ?productTypeComment .
    ?productType rdfs:label ?productTypeLabel .
