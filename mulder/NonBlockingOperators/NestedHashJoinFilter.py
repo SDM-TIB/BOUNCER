@@ -54,7 +54,7 @@ class NestedHashJoinFilter(Join):
         finalqueue = Queue()
         counter = 0
         try:
-            p = Process(target=self.processResults, args=(queue, finalqueue,))
+            p = Process(target=self.processResults, args=(queue, finalqueue,self.left_table, self.right_table, ))
             p.start()
             processqueue.put(p.pid)
             while not(tuple1 == "EOF") or (len(right_queues) > 0):
@@ -136,14 +136,12 @@ class NestedHashJoinFilter(Join):
                             #     new_right_operator.execute(queue)
                             # filter_bag = []
                             # count = count + 1
-                    print("Number of NHJ requ:", counter)
                 except Empty:
                         pass
                 except Exception as e:
                         #print "Unexpected error:", sys.exc_info()[0]
                         pass
         except Exception as e:
-            print("Exception in NHJF ", e)
             finalqueue.put(-2)
 
         finalqueue.put(counter)
@@ -179,7 +177,7 @@ class NestedHashJoinFilter(Join):
         # self.qresults.put("EOF")
         # return
 
-    def processResults(self, inqueue, finalqueue):
+    def processResults(self, inqueue, finalqueue, left_table, right_table):
         try:
             counter = -1
             eofcount = 0
@@ -191,12 +189,12 @@ class NestedHashJoinFilter(Join):
                         tuple1 = inqueue.get(False)
                         if tuple1 == "EOF":
                             eofcount += 1
-                            print("EOF found:", eofcount)
                         else:
                             resource = self.getResource(tuple1)
                             for v in self.vars:
                                 del tuple1[v]
-                            self.probeAndInsert2(resource, tuple1, self.left_table, self.right_table, time())
+
+                            self.probeAndInsert2(resource, tuple1, left_table, right_table, time())
                     except Empty:
                         pass
                     if counter == -1:
@@ -206,8 +204,6 @@ class NestedHashJoinFilter(Join):
                             pass
                         if eofcount == counter:
                             break
-                    else:
-                        print("Final count: ", counter, 'EOF count: ', eofcount)
         except Exception:
             # This catch:
             # Empty: in tuple2 = self.right.get(False), when the queue is empty.
