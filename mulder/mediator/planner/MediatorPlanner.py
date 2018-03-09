@@ -296,45 +296,56 @@ class MediatorPlanner(object):
                     n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
                     dependent_join = True
 
-        elif not lowSelectivityLeft and lowSelectivityRight:
-            # If left is selective, if left != NHJ and right != NHJ -> NHJ (l,r)
-            if len(join_variables):
-                if not isinstance(l, TreePlan):
-                    if isinstance(r, TreePlan):
-                        if not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
-                            n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-                            dependent_join = True
-                    else:
-                        # IF both are Independent Operators
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-                        dependent_join = True
-                elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin):
-                    if not isinstance(r, TreePlan):
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-                        dependent_join = True
-                    elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
-                        dependent_join = True
+        elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(r, TreePlan):
 
-        elif lowSelectivityLeft and not lowSelectivityRight:
+            # If left is selective, if left != NHJ and right != NHJ -> NHJ (l,r)
+            if len(join_variables) > 0:
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                dependent_join = True
+                #
+                # if not isinstance(l, TreePlan):
+                #     if isinstance(r, TreePlan):
+                #         if not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
+                #             n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                #             dependent_join = True
+                #     else:
+                #         # IF both are Independent Operators
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                #         dependent_join = True
+                # elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin):
+                #     if not isinstance(r, TreePlan):
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                #         dependent_join = True
+                #     elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin) and not isinstance(r.operator, Xgjoin):
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                #         dependent_join = True
+
+        elif lowSelectivityLeft and not lowSelectivityRight and not isinstance(l, TreePlan):
             # if right is selective if left != NHJ and right != NHJ -> NHJ (r,l)
-            if len(join_variables):
-                if not isinstance(r, TreePlan):
-                    if isinstance(l, TreePlan):
-                        if not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
-                            n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
-                            dependent_join = True
-                    else:
-                        # IF both are Independent Operators
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
-                        dependent_join = True
-                elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin):
-                    if not isinstance(l, TreePlan):
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
-                        dependent_join = True
-                    elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
-                        n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
-                        dependent_join = True
+            if len(join_variables) > 0:
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                dependent_join = True
+                #
+                # if not isinstance(r, TreePlan):
+                #     if isinstance(l, TreePlan):
+                #         if not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
+                #             n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                #             dependent_join = True
+                #     else:
+                #         # IF both are Independent Operators
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                #         dependent_join = True
+                # elif isinstance(r, TreePlan) and not isinstance(r.operator, NestedHashJoin):
+                #     if not isinstance(l, TreePlan):
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                #         dependent_join = True
+                #     elif isinstance(l, TreePlan) and not isinstance(l.operator, NestedHashJoin) and not isinstance(l.operator, Xgjoin):
+                #         n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                #         dependent_join = True
+        elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(l, NestedHashJoin) and not (isinstance(r, Xgjoin) or isinstance(r, NestedHashJoin)):
+            if len(join_variables) > 0:
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
+                dependent_join = True
 
         elif lowSelectivityLeft and lowSelectivityRight and isinstance(l, IndependentOperator) and isinstance(r, IndependentOperator):
             # both are non-selective and both are Independent Operators
