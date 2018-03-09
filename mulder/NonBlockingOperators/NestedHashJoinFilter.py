@@ -30,6 +30,9 @@ class NestedHashJoinFilter(Join):
         self.right_table = dict()
         self.qresults    = Queue()
         self.vars        = vars
+        self.left_queue = Queue()
+        self.right_operator = None
+        self.qresults = Queue()
 
     def instantiate(self, d):
         newvars = self.vars - set(d.keys())
@@ -40,40 +43,41 @@ class NestedHashJoinFilter(Join):
         return NestedHashJoin(newvars)
 
     def execute(self, left_queue, right_operator, out, processqueue=Queue()):
-        #print "execute NestedHashOptionalFilter"
         self.left_queue = left_queue
         self.right_operator = right_operator
         self.qresults = out
-        #print "NestedHashJoinFilter: right_operator", right_operator
         tuple1 = None
         tuple2 = None
         right_queues = dict()
         filter_bag = []
-        count = 0
-        while (not(tuple1 == "EOF") or (len(right_queues) > 0)):
-
+        queue = Queue()
+        finalqueue = Queue()
+        p = Process(target=self.processResults(queue, finalqueue,))
+        p.start()
+        processqueue.put(p.pid())
+        counter = 0
+        while not(tuple1 == "EOF") or (len(right_queues) > 0):
             try:
                 tuple1 = self.left_queue.get(False)
-                #print "tuple1", tuple1
                 # Try to get and process tuple from left queue
                 if not(tuple1 == "EOF"):
-                    #tuple1 = self.left_queue.get(False)
-                    #print "tuple1: "+str(tuple1)
                     instance = self.probeAndInsert1(tuple1, self.right_table, self.left_table, time())
-                    #print "sali de probe and insert 1 con tuple", tuple1
                     if instance: # the join variables have not been used to
                                  # instanciate the right_operator
                         filter_bag.append(tuple1)
 
                     if len(filter_bag) >= WINDOW_SIZE:
                         new_right_operator = self.makeInstantiation(filter_bag, self.right_operator)
-                        # print "Here in makeInstantation with filter"
                         # resource = self.getResource(tuple1)
-                        queue = Queue()
-                        right_queues[count] = queue
-                        new_right_operator.execute(queue)
+                        # queue = Queue()
+                        # right_queues[count] = queue
+                        if "Nested" in new_right_operator.__class__.__name__:
+                            new_right_operator.execute(self.right_operator.left_queue, self.right_operator.right_operator, queue, processqueue)
+                        else:
+                            new_right_operator.execute(queue, processqueue)
                         filter_bag = []
-                        count = count + 1
+                        counter += 1
+                        # count = count + 1
                         # #resource = self.getResource(tuple1)
                         # queue = Queue()
                         # right_queues[count] = queue
@@ -104,11 +108,15 @@ class NestedHashJoinFilter(Join):
                         #print "here", len(filter_bag), filter_bag
                         new_right_operator = self.makeInstantiation(filter_bag, self.right_operator)
                         #resource = self.getResource(tuple1)
-                        queue = Queue()
-                        right_queues[count] = queue
-                        new_right_operator.execute(queue)
+                        # queue = Queue()
+                        # right_queues[count] = queue
+                        if "Nested" in new_right_operator.__class__.__name__:
+                            new_right_operator.execute(self.right_operator.left_queue, self.right_operator.right_operator, queue, processqueue)
+                        else:
+                            new_right_operator.execute(queue, processqueue)
                         filter_bag = []
-                        count = count + 1
+                        counter += 1
+                        # count = count + 1
                         #
                         # queue = Queue()
                         # right_queues[count] = queue
@@ -132,36 +140,72 @@ class NestedHashJoinFilter(Join):
             except Exception as e:
                     #print "Unexpected error:", sys.exc_info()[0]
                     pass
+            finalqueue.put(counter)
 
-            toRemove = [] # stores the queues that have already received all its tuples
-            #print "right_queues", right_queues
-            for r in right_queues:
-                try:
-                    q = right_queues[r]
-                    tuple2 = None
-                    while(tuple2 != "EOF"):
-                        tuple2 = q.get(False)
-                        
-                        if (tuple2 == "EOF"):
-                            toRemove.append(r)
+        #     toRemove = [] # stores the queues that have already received all its tuples
+        #     for r in right_queues:
+        #         try:
+        #             q = right_queues[r]
+        #             tuple2 = None
+        #             while(tuple2 != "EOF"):
+        #                 tuple2 = q.get(False)
+        #
+        #                 if (tuple2 == "EOF"):
+        #                     toRemove.append(r)
+        #                 else:
+        #                     resource = self.getResource(tuple2)
+        #                     for v in self.vars:
+        #                         del tuple2[v]
+        #                     #print "new tuple2", tuple2
+        #                     self.probeAndInsert2(resource, tuple2, self.left_table, self.right_table, time())
+        #         except Exception:
+        #             # This catch:
+        #             # Empty: in tuple2 = self.right.get(False), when the queue is empty.
+        #             # TypeError: in att = att + tuple[var], when the tuple is "EOF".
+        #             #print "Unexpected error:", sys.exc_info()
+        #             pass
+        #
+        #     for r in toRemove:
+        #         del right_queues[r]
+        #
+        # # print("NestedHashJoinFilter: finished!")
+        # # Put EOF in queue and exit.
+        # self.qresults.put("EOF")
+        # return
+
+    def processResults(self, inqueue, finalqueue):
+        try:
+            counter = -1
+            eofcount = 0
+            while counter == -1 or eofcount != counter:
+                tuple1 = None
+                while tuple1 != "EOF":
+                    try:
+                        tuple1 = inqueue.get(False)
+                        if tuple1 == "EOF":
+                            eofcount += 1
                         else:
-                            resource = self.getResource(tuple2)
+                            resource = self.getResource(tuple1)
                             for v in self.vars:
-                                del tuple2[v]
-                            #print "new tuple2", tuple2
-                            self.probeAndInsert2(resource, tuple2, self.left_table, self.right_table, time())
-                except Exception:
-                    # This catch:
-                    # Empty: in tuple2 = self.right.get(False), when the queue is empty.
-                    # TypeError: in att = att + tuple[var], when the tuple is "EOF".
-                    #print "Unexpected error:", sys.exc_info()
-                    pass
+                                del tuple1[v]
+                            self.probeAndInsert2(resource, tuple1, self.left_table, self.right_table, time())
 
-            for r in toRemove:
-                del right_queues[r]
+                        if counter == -1:
+                            try:
+                                counter = finalqueue.get(False)
+                            except Empty:
+                                pass
+                            if eofcount == counter:
+                                break
+                    except Empty:
+                        pass
+        except Exception:
+            # This catch:
+            # Empty: in tuple2 = self.right.get(False), when the queue is empty.
+            # TypeError: in att = att + tuple[var], when the tuple is "EOF".
+            # print "Unexpected error:", sys.exc_info()
+            pass
 
-        # print("NestedHashJoinFilter: finished!")
-        # Put EOF in queue and exit.
         self.qresults.put("EOF")
         return
 
