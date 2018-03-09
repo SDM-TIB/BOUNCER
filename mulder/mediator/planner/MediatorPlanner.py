@@ -350,9 +350,12 @@ class MediatorPlanner(object):
                 #         dependent_join = True
         elif not lowSelectivityLeft and lowSelectivityRight and not isinstance(l, NestedHashJoin) and not (isinstance(r, Xgjoin) or isinstance(r, NestedHashJoin)):
             if len(join_variables) > 0:
+                n = TreePlan(NestedHashJoin(join_variables), all_variables, l, r)
+                dependent_join = True
+        elif lowSelectivityLeft and not lowSelectivityRight and not isinstance(r, NestedHashJoin) and not (isinstance(l, Xgjoin) or isinstance(l, NestedHashJoin)):
+            if len(join_variables) > 0:
                 n = TreePlan(NestedHashJoin(join_variables), all_variables, r, l)
                 dependent_join = True
-
         elif lowSelectivityLeft and lowSelectivityRight and isinstance(l, IndependentOperator) and isinstance(r, IndependentOperator):
             # both are non-selective and both are Independent Operators
             n = TreePlan(Xgjoin(join_variables), all_variables, r, l)
