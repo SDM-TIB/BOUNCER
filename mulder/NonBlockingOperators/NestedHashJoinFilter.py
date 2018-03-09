@@ -181,7 +181,9 @@ class NestedHashJoinFilter(Join):
             eofcount = 0
             while counter != -2 and counter == -1 or eofcount != counter:
                 tuple1 = None
+
                 while tuple1 != "EOF":
+                    print("Final count: ", counter, 'EOF count: ', eofcount)
                     try:
                         tuple1 = inqueue.get(False)
                         if tuple1 == "EOF":
@@ -195,12 +197,14 @@ class NestedHashJoinFilter(Join):
                         if counter == -1:
                             try:
                                 counter = finalqueue.get(False)
+                                print("Final count: ", counter, 'EOF count: ', eofcount)
                             except Empty:
                                 pass
                             if eofcount == counter:
                                 break
                     except Empty:
                         pass
+
         except Exception:
             # This catch:
             # Empty: in tuple2 = self.right.get(False), when the queue is empty.
