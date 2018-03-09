@@ -54,9 +54,7 @@ class NestedHashJoinFilter(Join):
         finalqueue = Queue()
         counter = 0
         try:
-            p = Process(target=self.processResults, args=(queue, finalqueue,self.left_table, self.right_table, self.qresults,))
-            p.start()
-            processqueue.put(p.pid)
+
             while not(tuple1 == "EOF") or (len(right_queues) > 0):
                 try:
                     tuple1 = self.left_queue.get(False)
@@ -145,6 +143,9 @@ class NestedHashJoinFilter(Join):
             finalqueue.put(-2)
 
         finalqueue.put(counter)
+        p = Process(target=self.processResults, args=(queue, finalqueue, self.qresults,))
+        p.start()
+        processqueue.put(p.pid)
 
         #     toRemove = [] # stores the queues that have already received all its tuples
         #     for r in right_queues:
@@ -177,7 +178,7 @@ class NestedHashJoinFilter(Join):
         # self.qresults.put("EOF")
         # return
 
-    def processResults(self, inqueue, finalqueue, left_table, right_table, out):
+    def processResults(self, inqueue, finalqueue, out):
         try:
             counter = -1
             eofcount = 0
@@ -193,8 +194,7 @@ class NestedHashJoinFilter(Join):
                             resource = self.getResource(tuple1)
                             for v in self.vars:
                                 del tuple1[v]
-
-                            self.probeAndInsert2(resource, tuple1, left_table, right_table, time(), out)
+                            self.probeAndInsert2(resource, tuple1, self.left_table, self.right_table, time(), out)
                     except Empty:
                         pass
                     if counter == -1:
