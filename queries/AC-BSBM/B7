@@ -23,7 +23,7 @@ WHERE {
   ?reviewer dc:publisher ?reviewerPublisher.
   ?reviewer dc:date ?reviewerPublishDate.
 
-  ?publisher bsbm:country <http://downlode.org/rdf/iso-3166/countries#US> .
+  ?publisher bsbm:country ?country .
   ?publisher rdfs:comment ?comment .
   ?publisher rdfs:label ?publisherLabel .
 }
