@@ -222,7 +222,7 @@ def onSignal2(s, stackframe):
 
 def get_options(argv):
     try:
-        opts, args = getopt.getopt(argv, "h:c:q:u:s:")
+        opts, args = getopt.getopt(argv, "h:c:q:u:p:s:")
     except getopt.GetoptError:
         usage()
         sys.exit(1)
@@ -250,6 +250,8 @@ def get_options(argv):
             user = arg
         elif opt == "-s":
             isEndpoint = arg == "True"
+        elif opt == '-p':
+            printResults = eval(arg)
 
     if not configfile or not queryfile:
         usage()
