@@ -106,28 +106,28 @@ def runQuery(queryfile, configfile, user, isEndpoint, res, qplan, adaptive, with
                 try:
                     os.kill(p2.pid, 9)
                 except OSError as ex:
-                    print("Exception while terminating execution process", ex)
+                    # print("Exception while terminating execution process", ex)
                     continue
             else:
                 break
     # print('Number of sub-processes to terminate: ', processqueue.qsize())
-    while True:
-        try:
-            p = processqueue.get(False)
-            if check_pid(p):
-                try:
-                    os.kill(p, 9)
-                    # print("Process ", p, ' has been terminated')
-                except OSError as err:
-                    print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
-                    # processqueue.put(p)
-                    continue
-
-                if check_pid(p):
-                    processqueue.put(p)
-
-        except Empty:
-            break
+    # while True:
+    #     try:
+    #         p = processqueue.get(False)
+    #         if check_pid(p):
+    #             try:
+    #                 os.kill(p, 9)
+    #                 # print("Process ", p, ' has been terminated')
+    #             except OSError as err:
+    #                 print("ERROR: Process ", p, ' cannot be terminated. Trying again ..', err)
+    #                 # processqueue.put(p)
+    #                 continue
+    #
+    #             if check_pid(p):
+    #                 processqueue.put(p)
+    #
+    #     except Empty:
+    #         break
 
 
 def check_pid(pid):
@@ -204,20 +204,20 @@ def onSignal1(s, stackframe):
     cs = active_children()
     for c in cs:
         try:
-            os.kill(c.pid, 9)
+            os.kill(c.pid, s)
         except OSError as ex:
             try:
-                os.kill(c.pid, 9)
+                os.kill(c.pid, s)
             except:
                 pass
             continue
 
-    sys.exit(9)
+    sys.exit(s)
 
 
 def onSignal2(s, stackframe):
     printInfo()
-    sys.exit(9)
+    sys.exit(s)
 
 
 def get_options(argv):
