@@ -50,110 +50,81 @@ class NestedHashJoinFilter(Join):
         tuple2 = None
         right_queues = dict()
         filter_bag = []
-        queue = Queue()
-        finalqueue = Queue()
-        counter = 0
-        try:
 
-            while not(tuple1 == "EOF") or (len(right_queues) > 0):
+        while not (tuple1 == "EOF") or (len(right_queues) > 0):
+            try:
+                tuple1 = self.left_queue.get(False)
+                # print "tuple1", tuple1
+                # Try to get and process tuple from left queue
+                if not (tuple1 == "EOF"):
+                    # tuple1 = self.left_queue.get(False)
+                    # print "tuple1: "+str(tuple1)
+                    instance = self.probeAndInsert1(tuple1, self.right_table,
+                                                    self.left_table, time(), self.qresults)
+                    # print "sali de probe and insert 1 con tuple", tuple1
+                    if instance:  # the join variables have not been used to
+                        # instanciate the right_operator
+                        filter_bag.append(tuple1)
+                    # print "filter_bag", len(filter_bag)
+
+                    if len(filter_bag) >= WINDOW_SIZE:
+                        new_right_operator = self.makeInstantiation(filter_bag,
+                                                                    self.right_operator)
+                        # print "Here in makeInstantation with filter"
+                        # resource = self.getResource(tuple1)
+                        queue = Queue()
+                        right_queues[count] = queue
+                        new_right_operator.execute(queue)
+                        filter_bag = []
+                        count = count + 1
+
+                else:
+                    if (len(filter_bag) > 0):
+                        # print "here", len(filter_bag), filter_bag
+                        new_right_operator = self.makeInstantiation(filter_bag,
+                                                                    self.right_operator)
+                        # resource = self.getResource(tuple1)
+                        queue = Queue()
+                        right_queues[count] = queue
+                        new_right_operator.execute(queue)
+                        filter_bag = []
+                        count = count + 1
+
+            except Empty:
+                pass
+            except Exception as e:
+                # print "Unexpected error:", sys.exc_info()[0]
+                # print e
+                pass
+
+            toRemove = []  # stores the queues that have already received all its tuples
+            # print "right_queues", right_queues
+            for r in right_queues:
                 try:
-                    tuple1 = self.left_queue.get(False)
-                    # Try to get and process tuple from left queue
-                    if not(tuple1 == "EOF"):
-                        instance = self.probeAndInsert1(tuple1, self.right_table, self.left_table, time(), self.qresults)
-                        if instance: # the join variables have not been used to
-                                     # instanciate the right_operator
-                            filter_bag.append(tuple1)
+                    q = right_queues[r]
+                    tuple2 = None
+                    while (tuple2 != "EOF"):
+                        tuple2 = q.get(False)
 
-                        if len(filter_bag) >= WINDOW_SIZE:
-                            new_right_operator = self.makeInstantiation(filter_bag, self.right_operator)
-                            # resource = self.getResource(tuple1)
-                            # queue = Queue()
-                            # right_queues[count] = queue
-                            if "Nested" in new_right_operator.__class__.__name__:
-                                new_right_operator.execute(self.right_operator.left_queue, self.right_operator.right_operator, queue, processqueue)
-                            else:
-                                new_right_operator.execute(queue, processqueue)
-                            filter_bag = []
-                            counter += 1
-                            p = Process(target=self.processBatch, args=(queue, finalqueue, self.qresults,))
-                            p.start()
-                            processqueue.put(p.pid)
-                            # count = count + 1
-                            # #resource = self.getResource(tuple1)
-                            # queue = Queue()
-                            # right_queues[count] = queue
-                            #
-                            # if new_right_operator.__class__.__name__ == "TreePlan":
-                            #     self.tq = Queue()
-                            #     p1 = Process(target=new_right_operator.execute, args=(self.tq, processqueue))
-                            #     p1.start()
-                            #     #processqueue.put(p1.pid)
-                            #     while True:
-                            #         # Get the next item in queue.
-                            #         res = self.tq.get(True)
-                            #         # Put the result into the output queue.
-                            #         # print res
-                            #         queue.put(res)
-                            #         #print res
-                            #         # Check if there's no more data.
-                            #         if (res == "EOF"):
-                            #             break
-                            #     p1.terminate()
-                            # else:
-                            #     new_right_operator.execute(queue)
-                            # filter_bag = []
-                            # count = count + 1
+                        if (tuple2 == "EOF"):
+                            toRemove.append(r)
+                        else:
+                            resource = self.getResource(tuple2)
+                            for v in self.vars:
+                                del tuple2[v]
+                            # print "new tuple2", tuple2
+                            self.probeAndInsert2(resource, tuple2, self.left_table, self.right_table, time(), self.qresults)
+                except Exception:
+                    # This catch:
+                    # Empty: in tuple2 = self.right.get(False), when the queue is empty.
+                    # TypeError: in att = att + tuple[var], when the tuple is "EOF".
+                    # print "Unexpected error:", sys.exc_info()
+                    pass
 
-                    else:
-                        if (len(filter_bag) > 0):
-                            #print "here", len(filter_bag), filter_bag
-                            new_right_operator = self.makeInstantiation(filter_bag, self.right_operator)
-                            #resource = self.getResource(tuple1)
-                            # queue = Queue()
-                            # right_queues[count] = queue
-                            if "Nested" in new_right_operator.__class__.__name__:
-                                new_right_operator.execute(self.right_operator.left_queue, self.right_operator.right_operator, queue, processqueue)
-                            else:
-                                new_right_operator.execute(queue, processqueue)
-                            filter_bag = []
-                            counter += 1
-                            p = Process(target=self.processBatch, args=(queue, finalqueue, self.qresults,))
-                            p.start()
-                            processqueue.put(p.pid)
-                            # count = count + 1
-                            #
-                            # queue = Queue()
-                            # right_queues[count] = queue
-                            # if new_right_operator.__class__.__name__ == "TreePlan":
-                            #     self.tq = Queue()
-                            #     p1 = Process(target=new_right_operator.execute, args=(self.tq, processqueue))
-                            #     p1.start()
-                            #     #processqueue.put(p1.pid)
-                            #     while True:
-                            #         res = self.tq.get(True)
-                            #         queue.put(res)
-                            #         if (res == "EOF"):
-                            #             break
-                            #     p1.terminate()
-                            # else:
-                            #     new_right_operator.execute(queue)
-                            # filter_bag = []
-                            # count = count + 1
-                except Empty:
-                        pass
-                except Exception as e:
-                        #print "Unexpected error:", sys.exc_info()[0]
-                        pass
-        except Exception as e:
-            pass
-
-        finished = 0
-        while finished < counter:
-            eof = finalqueue.get(True)
-            if eof == 'EOF':
-                finished += 1
-
+            for r in toRemove:
+                if r in right_queues:
+                    del right_queues[r]
+        # Put EOF in queue and exit.
         self.qresults.put("EOF")
         return
 
