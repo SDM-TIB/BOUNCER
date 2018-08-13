@@ -82,6 +82,11 @@ def conclude(res, p2, printResults, traces=True):
 
 def printInfo():
     global tn
+    global dt
+    global pt
+    global t1
+    global c1
+    global cn
     if tn == -1:
         tn = time() - time1
     l = (qname + "\t" + str(dt) + "\t" + str(pt) + "\t" + str(t1) + "\t" + str(tn) + "\t" + str(c1) + "\t" + str(cn))
@@ -91,6 +96,9 @@ def printInfo():
 
 def printtraces():
     global tn
+    global cn
+    global time1
+
     if tn == -1:
         tn = time() - time1
     l = (qname + "," + "MULDER," + str(cn) + "," + str(tn))
@@ -112,9 +120,10 @@ def onSignal2(s, stackframe):
     printInfo()
     sys.exit(s)
 
+
 def get_options(argv):
     try:
-        opts, args = getopt.getopt(argv, "h:c:q:u:s:r:")
+        opts, args = getopt.getopt(argv, "h:c:q:u:p:s:r:")
     except getopt.GetoptError:
         usage()
         sys.exit(1)
@@ -129,6 +138,8 @@ def get_options(argv):
     withoutCounts = False
     printResults = False
     result_folder = './'
+    planonly = False
+
     for opt, arg in opts:
         if opt == "-h":
             usage()
@@ -139,6 +150,8 @@ def get_options(argv):
             queryfile = arg
         elif opt == "-u":
             user = arg
+        elif opt == "-p":
+            planonly = True
         elif opt == "-s":
             isEndpoint = arg == "True"
         elif opt == '-r':
@@ -148,7 +161,7 @@ def get_options(argv):
         usage()
         sys.exit(1)
 
-    return (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder)
+    return (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder, planonly)
 
 
 def usage():
@@ -158,10 +171,10 @@ def usage():
 
 if __name__ == '__main__':
     user = None
-    #(configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder) = get_options(sys.argv[1:])
+    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder, planonly) = get_options(sys.argv[1:])
 
-    queryss = open('queries/AC-BSBM/B1').read()
-    config = ConfigFile('config/config.json')
+    queryss = open(queryfile).read() # 'queries/AC-BSBM/B1'
+    config = ConfigFile(configfile) # 'config/config.json'
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
 
@@ -204,6 +217,8 @@ if __name__ == '__main__':
     plan = planner.createPlan()
     pt = time() - time1
     print(plan)
+    if planonly:
+        exit()
     #exit()
     output = Queue()
     processqueue = Queue()
