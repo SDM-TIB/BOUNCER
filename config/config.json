@@ -2,7 +2,7 @@
   "MoleculeTemplates": [
     {
        "type": "filepath",
-       "path":"templates/bsbm100M-templates.json"
+       "path":"templates/new-bouncer-template-sample.json"
      }
   ]
 }

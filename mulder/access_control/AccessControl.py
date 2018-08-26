@@ -9,9 +9,10 @@ from mulder.access_control import PolicyUtility
 
 class AccessControl(object):
 
-    def __init__(self, server='http://localhost:9999/validate/retrieve'):
+    def __init__(self, config, server='http://localhost:9999/validate/retrieve'):
         self.server = server
         self.accesspolicy = {}
+        self.config = config
 
     def get_policy(self, user, operation, molecule, properties, dataset="*"):
         req = dict()
@@ -44,6 +45,50 @@ class AccessControl(object):
 
         return accesspolicies
 
+    def get_policies_from_mts(self, moleculename, preds, moleculemetadata, user, operation):
+
+        molproperties = {p['predicate']: p['policies'] for p in moleculemetadata[moleculename]['predicates'] if 'policies' in p}
+
+        properties_granted = {}
+        denied = {}
+        join_on_fed = {}
+        accesspolicies = []
+        datasets = []
+        for p in preds:
+            if p in molproperties:
+                for acp in molproperties[p]:
+                    dataset = acp['dataset']
+                    if dataset not in properties_granted:
+                        properties_granted[dataset] = []
+                    if dataset not in denied:
+                        denied[dataset] = []
+                    if dataset not in join_on_fed:
+                        join_on_fed[dataset] = []
+                    datasets.append(dataset)
+
+                    if acp['operator'] == "PR":
+                        properties_granted[dataset].append(p)
+                    elif acp['operator'] == 'JF':
+                        join_on_fed[dataset].append(p)
+                    else:
+                        denied[dataset].append(p)
+            else:
+                for dataset in datasets:
+                    if dataset in denied:
+                        denied[dataset].append(p)
+                    else:
+                        denied[dataset] = [p]
+
+        for dataset in set(datasets):
+            apolicy = AccessPolicy("", user, dataset, moleculename, operation,
+                                   properties_granted[dataset] if dataset in properties_granted else [],
+                                   denied[dataset] if dataset in denied else [],
+                                   join_on_fed[dataset] if dataset in join_on_fed else [])
+            accesspolicies.append(apolicy)
+        import pprint
+        pprint.pprint(accesspolicies)
+        return accesspolicies
+
     def get_access_policies(self, res, stars, query, user, metadata):
         """
         Return access policies associated with each (star,moleculetemplate) pairs for a user
@@ -64,11 +109,12 @@ class AccessControl(object):
             apolicies = dict()
             for m in mols:
                 preds = PolicyUtility.getPredicates(ltr, query.prefs)
-                aps = self.get_policy(user=user,
-                                      molecule=m,
-                                      properties=preds,
-                                      operation=Operation(),
-                                      dataset=metadata[m]['wrappers'][0]['url'])
+                aps = self.get_policies_from_mts(m, preds, metadata, user, Operation())
+                # aps = self.get_policy(user=user,
+                #                       molecule=m,
+                #                       properties=preds,
+                #                       operation=Operation(),
+                #                       dataset=metadata[m]['wrappers'][0]['url'])
                 apolicies[m] = aps
 
             accessPolicies[r] = apolicies
@@ -87,10 +133,11 @@ class AccessControl(object):
         :param queryConnections:
         :return:
         """
-        # Sanity check: if projected variables have access grant
+        # Sanity check: if projected variables and join variables have access grant
         if not self.is_projection_granted(query, stars, policies):
-            print("Projection is not granted")
+            print("Projection from source(s) is not granted")
             return []
+
         depGraphs = PolicyUtility.create_dependency_graph(res, stars, query, policies, queryConnections)
         execGraphs = []
         if len(depGraphs) == 0:
@@ -369,25 +416,39 @@ class AccessControl(object):
 
     def is_projection_granted(self, query, stars, policies):
         """
-         Check if all projection variables have at least one star for which Access is Granted
+         Check if all projection and join variables have at least one star for which Access is Granted
 
         :param query:
         :param stars:
         :param policies:
         :return:
         """
+
+        querypredvars = {}
+        for s in policies:
+            predvars = PolicyUtility.getPredicatesAndVars(stars[s], query.prefs)
+            querypredvars[s] = predvars
+
         projGrants = {p.name: [] for p in query.args}
         starsVars = []
+        joinGrants = {}
         for s in policies:
             for m in policies[s]:
                 for policy in policies[s][m]:
-                    starTPs = stars[s]
-                    sVars = PolicyUtility.getPredicatesAndVars(starTPs, query.prefs)
-                    predicates = list(set(sVars.values()))
+                    sVars = querypredvars[s] # PolicyUtility.getPredicatesAndVars(starTPs, query.prefs)
                     starsVars.extend(list(set(sVars.keys())))
+                    joinvars = [set(sVars.keys()).intersection(set(querypredvars[t].keys())) for t in querypredvars if t != s]
+                    joinvars = [v for j in joinvars for v in j]
+                    for j in joinvars:
+                        if j not in joinGrants:
+                            joinGrants[j] = []
                     denied = list(set(sVars.values()).intersection(set(policy.properties_denied)))
-                    if len(denied) > 0:
-                        denied_vars = [k for k in sVars.keys() if sVars[k] in denied]
+                    fed_vars = list(set(sVars.values()).intersection(set(policy.properties_join_on_fed)))
+
+                    if len(denied) > 0 or len(fed_vars) > 0:
+                        denied_vars = [k for k in sVars.keys() if sVars[k] in denied or sVars[k] in fed_vars]
+                        if len(denied_vars) > 0 and len(stars[s]) == 1:
+                            continue
                         for p in projGrants:
                             if p in sVars.keys() and p not in denied_vars:
                                 projGrants[p].append(s)
@@ -399,7 +460,49 @@ class AccessControl(object):
         denied_projections = [p for p in projGrants if len(projGrants[p]) == 0 and p in starsVars]
         if len(denied_projections) > 0:
             return False
+
         return True
+
+    # def is_join_on_fed_granted(self, query, stars, policies):
+    #     """
+    #      Check if all projection variables have at least one star for which Access is Granted
+    #
+    #     :param query:
+    #     :param stars:
+    #     :param policies:
+    #     :return:
+    #     """
+    #     projGrants = {p.name: [] for p in query.args}
+    #     querypredvars = {}
+    #     starsVars = []
+    #     for s in policies:
+    #         predvars = PolicyUtility.getPredicatesAndVars(stars[s], query.prefs)
+    #         querypredvars[s] = predvars
+    #
+    #     for s in querypredvars:
+    #         for m in policies[s]:
+    #             for policy in policies[s][m]:
+    #                 sVars = querypredvars[s] #  PolicyUtility.getPredicatesAndVars(starTPs, query.prefs)
+    #                 predicates = list(set(sVars.values()))
+    #                 starvar = set(sVars.keys())
+    #                 starsVars.extend(list(starvar))
+    #                 joinvars = [starvar.intersection(querypredvars[t]) for t in querypredvars if t != s]
+    #                 joinvars = [v for j in joinvars for v in j]
+    #                 denied = list(set(joinvars).intersection(set(policy.properties_denied)))
+    #                 if len(denied) > 0:
+    #                     denied_vars = [k for k in sVars.keys() if sVars[k] in denied]
+    #                     for p in projGrants:
+    #                         if p in sVars.keys() and p not in denied_vars:
+    #                             projGrants[p].append(s)
+    #                 else:
+    #                     for p in sVars:
+    #                         if p in projGrants:
+    #                             projGrants[p].append(s)
+    #
+    #     denied_projections = [p for p in projGrants if len(projGrants[p]) == 0 and p in starsVars]
+    #     if len(denied_projections) > 0:
+    #         return False
+    #     return True
 
 
 def request_server(server, request):

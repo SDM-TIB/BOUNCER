@@ -5,7 +5,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX bsbm-inst: <http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/instances/>
 
-SELECT DISTINCT ?offer ?price
+SELECT DISTINCT ?offer  ?price
 WHERE {
   ?product rdfs:label ?productLabel .
 

@@ -27,11 +27,11 @@ from mulder.common.parser.services import UnionBlock, JoinBlock
 
 
 class MediatorPlanner(object):
-    def __init__(self, query,  wc, contact, endpointType, config):
+    def __init__(self, query,  wc, contact, accessPolicy, config):
         self.query = query
         self.withcounts = wc
         self.contact = contact
-        self.endpType = endpointType
+        self.accessPolicy = accessPolicy
         self.config = config
         self.buffersize = 168585
         self.adaptive = True

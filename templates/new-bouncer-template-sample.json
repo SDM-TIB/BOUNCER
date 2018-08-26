@@ -1,0 +1,330 @@
+[
+  {
+  "rootType": "http://xmlns.com/foaf/0.1/Person",
+  "linkedTo":[],
+  "predicates": [
+    {"predicate":"http://xmlns.com/foaf/0.1/name",
+      "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]},
+    {"predicate":"http://xmlns.com/foaf/0.1/mbox_sha1sum",
+      "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country",
+      "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date",
+      "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11892/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11892/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":[
+        "http://xmlns.com/foaf/0.1/mbox_sha1sum",
+        "http://purl.org/dc/elements/1.1/date",
+        "http://purl.org/dc/elements/1.1/publisher",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country",
+        "http://xmlns.com/foaf/0.1/name"]}
+  ]
+ },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Producer",
+  "linkedTo":[],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Producer"],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://xmlns.com/foaf/0.1/homepage","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11893/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11893/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://purl.org/dc/elements/1.1/publisher",
+                    "http://www.w3.org/2000/01/rdf-schema#label",
+                    "http://www.w3.org/2000/01/rdf-schema#comment",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country",
+                    "http://purl.org/dc/elements/1.1/date",
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                    "http://xmlns.com/foaf/0.1/homepage"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product",
+  "linkedTo":[
+          "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Producer",
+          "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductType",
+          "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductFeature"
+  ],
+  "predicates": [
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/producer",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Producer"],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+      "range": ["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductType"],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Producer"],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"JF"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productFeature",
+      "range": ["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductFeature"],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual1","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual2","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual3", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual4", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual5","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual6","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric1","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric2", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric3", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric4","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric5","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric6","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11899/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11899/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://www.w3.org/2000/01/rdf-schema#comment",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric6",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric1",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric2",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric3",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric5",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productFeature",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/producer",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual1",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual2",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual4",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual5",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual6",
+                    "http://purl.org/dc/elements/1.1/publisher",
+                    "http://purl.org/dc/elements/1.1/date",
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyNumeric4",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/productPropertyTextual3",
+                    "http://www.w3.org/2000/01/rdf-schema#label"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductType",
+  "linkedTo":[],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#subClassOf",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductType"],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11898/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11898/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://purl.org/dc/elements/1.1/publisher",
+                    "http://www.w3.org/2000/01/rdf-schema#subClassOf",
+                    "http://purl.org/dc/elements/1.1/date",
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                    "http://www.w3.org/2000/01/rdf-schema#comment",
+                    "http://www.w3.org/2000/01/rdf-schema#label"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Vendor",
+  "linkedTo":[],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Vendor"],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://xmlns.com/foaf/0.1/homepage","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#label", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11894/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11894/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://xmlns.com/foaf/0.1/homepage",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "http://purl.org/dc/elements/1.1/publisher",
+        "http://www.w3.org/2000/01/rdf-schema#label",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/country",
+        "http://www.w3.org/2000/01/rdf-schema#comment",
+        "http://purl.org/dc/elements/1.1/date"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Offer",
+  "linkedTo":[
+            "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Vendor",
+            "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product"
+  ],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/product",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product"],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"JF"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/vendor",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Vendor"],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/offerWebpage","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/price","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validFrom","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validTo","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/deliveryDays","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11895/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11895/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/deliveryDays",
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validTo",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/price",
+        "http://purl.org/dc/elements/1.1/date",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/vendor",
+        "http://purl.org/dc/elements/1.1/publisher",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/product",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/offerWebpage",
+        "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/validFrom"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/ProductFeature",
+  "linkedTo":[],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11897/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11897/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11897/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#label","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11897/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/2000/01/rdf-schema#comment","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11897/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11897/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":[
+                  "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                  "http://purl.org/dc/elements/1.1/publisher",
+                  "http://purl.org/dc/elements/1.1/date",
+                  "http://www.w3.org/2000/01/rdf-schema#comment",
+                  "http://www.w3.org/2000/01/rdf-schema#label"
+      ]
+    }
+  ]
+  },
+  {
+  "rootType": "http://purl.org/stuff/rev#Review",
+  "linkedTo":[
+              "http://xmlns.com/foaf/0.1/Person",
+              "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product"
+  ],
+  "predicates": [
+    {"predicate":"http://purl.org/dc/elements/1.1/publisher", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/date", "range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "range": [],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/stuff/rev#text","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://purl.org/dc/elements/1.1/title","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"JF"}]},
+    {"predicate":"http://purl.org/stuff/rev#reviewer","range":["http://xmlns.com/foaf/0.1/Person"],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating1","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating2","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating3","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating4","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewDate","range":[],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]},
+    {"predicate":"http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewFor",
+      "range":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/Product"],
+      "policies": [{"dataset":"http://0.0.0.0:11896/sparql", "operator":"PR"}]}
+  ],
+  "wrappers":[
+    {"url":"http://0.0.0.0:11896/sparql", "urlparam": "", "wrapperType":"SPARQLEndpoint",
+      "predicates":["http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewFor",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating3",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating1",
+                    "http://purl.org/stuff/rev#reviewer",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/reviewDate",
+                    "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                    "http://purl.org/stuff/rev#text",
+                    "http://purl.org/dc/elements/1.1/date",
+                    "http://purl.org/dc/elements/1.1/title",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating4",
+                    "http://www4.wiwiss.fu-berlin.de/bizer/bsbm/v01/vocabulary/rating2",
+                    "http://purl.org/dc/elements/1.1/publisher"
+      ]
+    }
+  ]
+  }
+]

@@ -171,12 +171,16 @@ def usage():
 
 if __name__ == '__main__':
     user = None
-    (configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder, planonly) = get_options(sys.argv[1:])
+    #(configfile, queryfile, user, isEndpoint, plan, adaptive, withoutCounts, printResults, result_folder, planonly) = get_options(sys.argv[1:])
 
-    queryss = open(queryfile).read() # 'queries/AC-BSBM/B1'
-    config = ConfigFile(configfile) # 'config/config.json'
+    # queryss = open(queryfile).read() # 'queries/AC-BSBM/B1'
+    # config = ConfigFile(configfile) # 'config/config.json'
     tempType = "MULDER" #"SemEP" "METIS"
     joinstarslocally = False
+
+    queryss = open('queries/AC-BSBM/B3').read()  # 'queries/AC-BSBM/B1'
+    config = ConfigFile('config/config.json')  # 'config/config.json'
+    planonly = True
 
     global time1
     global qname
@@ -198,8 +202,7 @@ if __name__ == '__main__':
     else:
         user = User("P5", url=user)
 
-    server = 'http://localhost:9999/validate/retrieve'
-    accesscontrol = AccessControl(server)
+    accesscontrol = AccessControl(config)
 
     dc = MediatorDecomposer(queryss, config, user, accesscontrol, tempType, joinstarslocally)
 
@@ -213,7 +216,7 @@ if __name__ == '__main__':
         print("Query decomposer returns None")
         exit()
 
-    planner = MediatorPlanner(quers, True, contactsparqlendpoint, None, config)
+    planner = MediatorPlanner(quers, True, contactsparqlendpoint, dc.accesspolicy, config)
     plan = planner.createPlan()
     pt = time() - time1
     print(plan)
@@ -227,6 +230,7 @@ if __name__ == '__main__':
     i = 0
     p2 = Process(target=plan.execute, args=(output, processqueue, ))
     p2.start()
+
     p3 = Process(target=conclude, args=(output, p2, False, False))
     p3.start()
     signal.signal(12, onSignal1)

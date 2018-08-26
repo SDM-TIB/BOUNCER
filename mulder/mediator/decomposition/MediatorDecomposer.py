@@ -192,6 +192,13 @@ class MediatorDecomposer(object):
             typemols = self.checkRDFTypeStatemnt(ltr)
             if len(typemols) > 0:
                 selectedmolecules[s] = typemols
+                for m in typemols:
+                    properties = [p['predicate'] for p in self.config.metadata[m]['predicates']]
+                    pinter = set(properties).intersection(preds)
+                    if len(pinter) != len(preds):
+                        print("Subquery: ", stars[s], "\nCannot be executed, because it contains properties that "
+                                                      "does not exist in this federations of datasets.")
+                        return []
                 continue
 
             if len(preds) == 0:
@@ -249,8 +256,8 @@ class MediatorDecomposer(object):
         for soln in acres:
             solnplan = []
             for e in soln:
-                # print(e)
-                # print(soln[e])
+                # print('e==>', e)
+                # print('soln==>', soln[e])
                 plan = self.make_plan(e, stars, soln[e], fl)
                 solnplan.append(plan)
 
@@ -307,8 +314,9 @@ class MediatorDecomposer(object):
         else:
             # make unions
             slist = []
-
-            for url in soln['dataset']:
+            endps = [e for e in soln['dataset']]
+            endps = list(set(endps))
+            for url in endps:
                 su = Service('<'+url+'>', stars[s])
                 fls = self.includeFilter([su], fl)
                 if len(fls) > 0:
@@ -319,6 +327,7 @@ class MediatorDecomposer(object):
 
                 suplan = self.makePlanAux([su], [], dependent)
                 slist.append(suplan)
+
             splan = UnionBlock([JoinBlock([plan]) for plan in slist])
 
         return splan

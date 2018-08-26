@@ -7,7 +7,7 @@ class AccessPolicy(object):
     """
     Defines an access policy for a single operation
     """
-    def __init__(self, server, user="MULDER", dataset=None, molecule=None, operation=None, properties_granted=None, properties_denied=None):
+    def __init__(self, server, user="MULDER", dataset=None, molecule=None, operation=None, properties_granted=None, properties_denied=None, properties_join_on_fed=None):
         self.server = server
         self.user = user
         self.dataset = dataset
@@ -15,6 +15,7 @@ class AccessPolicy(object):
         self.operation = operation
         self.properties_granted = properties_granted
         self.properties_denied = properties_denied
+        self.properties_join_on_fed = properties_join_on_fed
 
     def get_policy(self, user, operation, molecule, properties, dataset="*"):
         req = dict()
@@ -56,14 +57,19 @@ class AccessPolicy(object):
         else:
             granted = str(self.properties_granted)
 
+        if self.properties_join_on_fed is None:
+            join_on_fed = []
+        else:
+            join_on_fed = str(self.properties_join_on_fed)
         output = "{\n" \
                  "\tUser/Mediator: " + str(self.user) + "\n" \
                  "\tDataset: " + self.dataset + "\n" \
                  "\tMolecule: " + self.molecule + "\n" \
                  "\tOperation: " + str(self.operation) + "\n" \
-                 "\tProperties GRANTED: " + str(granted) + "\n" \
-                 "\tProperties DENIED:  " + str(denied) + "\n" \
-                "}"
+                 "\tPublic properties: " + str(granted) + "\n" \
+                 "\tLocally Joinable properties:  " + str(denied) + "\n" \
+                 "\tProperties Joinable on Mediator:  " + str(join_on_fed) + "\n" \
+                                                                                                            "}"
         return output
 
 
