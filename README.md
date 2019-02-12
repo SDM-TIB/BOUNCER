@@ -31,29 +31,29 @@ Configure BOUNCER
 
     Example:
 
-    ```
-     http://biotea.linkeddata.es/sparql
-     http://colil.dbcls.jp/sparql
-    ```
+```
+ http://biotea.linkeddata.es/sparql
+ http://colil.dbcls.jp/sparql
+```
 
 2. Run RDF molecule template extractor in `scripts` folder:
 
-    `scripts$ python3.5 collect_rdfmts.py -e endpoints.txt -o json -p 'templates/mytemplates.json'`
+    `scripts$ python3.5 create_rdfmts.py -s endpoints.txt -o 'templates/mytemplates.json'`
 
 3. Create configuration file, `config.json` in `config` folder:
 
     Example:
 
-    ```
-      {
-      "MoleculeTemplates": [
-        {
-           "type": "filepath",
-           "path":"templates/mytemplates.json"
-             }
-          ]
-       }
-    ```
+```
+  {
+  "MoleculeTemplates": [
+    {
+       "type": "filepath",
+       "path":"templates/mytemplates.json"
+         }
+      ]
+   }
+```
 
 4. Now BOUNCER is ready to "investigate" :)
 
